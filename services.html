@@ -310,8 +310,34 @@
   </div>
 </footer>
 
-<a href="https://wa.me/2348060001122" class="wa-float" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+<div class="float-stack">
+  <button type="button" class="enquiry-float" id="enquiryFloat" aria-label="View enquiry list">
+    <i class="fa-solid fa-clipboard-list"></i>
+    <span class="enquiry-badge" id="enquiryBadge">0</span>
+  </button>
+  <a href="https://wa.me/2348060001122" class="wa-float" aria-label="Chat on WhatsApp Now">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-float-text">Chat on WhatsApp Now</span>
+  </a>
+</div>
+
+<div class="enquiry-overlay" id="enquiryOverlay"></div>
+<aside class="enquiry-drawer" id="enquiryDrawer">
+  <div class="enquiry-drawer-head">
+    <h4><i class="fa-solid fa-clipboard-list"></i> Your Enquiry List</h4>
+    <button type="button" class="enquiry-close" id="enquiryCloseBtn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="enquiry-drawer-body">
+    <p class="enquiry-empty" id="enquiryEmpty">Your enquiry list is empty. Browse the <a href="portfolio.html">portfolio</a> and tap "Enquire" on anything you like — then send it all to us in one WhatsApp message.</p>
+    <div class="enquiry-list" id="enquiryList"></div>
+  </div>
+  <div class="enquiry-drawer-foot">
+    <button type="button" class="btn btn-outline btn-sm" id="enquiryClearBtn">Clear All</button>
+    <button type="button" class="btn btn-primary" id="enquirySendBtn" disabled><i class="fa-brands fa-whatsapp"></i> Send Enquiry via WhatsApp</button>
+  </div>
+</aside>
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/enquiry.js"></script>
 </body>
 </html>
