@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mockup Studio | Creative Branding Solutions</title>
+<meta name="description" content="Design your own product mockup with Creative Branding Solutions — upload your logo, choose a product and colour, position your branding, and send us your design for a free quote." />
+<link rel="icon" href="assets/images/logo.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-left">
+      <span><i class="fa-solid fa-envelope"></i> hello@creativebrandingsolutions.ng</span>
+      <span><i class="fa-solid fa-phone"></i> +234 806 000 1122</span>
+      <span><i class="fa-solid fa-location-dot"></i> Lagos, Nigeria</span>
+    </div>
+    <div class="topbar-right">Enhancing Visibility, Empowering Brands</div>
+  </div>
+</div>
+
+<div class="navwrap">
+  <nav class="container">
+    <a href="index.html" class="brand">
+      <img src="assets/images/logo.jpg" alt="Creative Branding Solutions logo" />
+      <div class="brand-name">CREATIVE BRANDING<span>SOLUTIONS</span></div>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="mockup-studio.html" class="active">Mockup Studio</a>
+      <a href="#">Blog</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a href="tel:+2348060001122" class="btn btn-outline btn-sm"><i class="fa-solid fa-phone"></i> Call Us</a>
+      <a href="contact.html" class="btn btn-primary btn-sm">Get a Quote</a>
+    </div>
+    <button class="navtoggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+  </nav>
+</div>
+
+<!-- PAGE HEAD -->
+<header class="pagehead halftone">
+  <div class="container">
+    <div class="crumbs"><a href="index.html">Home</a> / Mockup Studio</div>
+    <h1>Design Your Own Mockup</h1>
+    <p style="max-width:620px;color:#d7deee;font-size:16.5px;">Pick a product, upload your logo, and see it come to life instantly. When you're happy with the design, send it straight to our team for a free, no-obligation quote.</p>
+  </div>
+</header>
+
+<!-- STUDIO -->
+<section>
+  <div class="container">
+
+    <div class="strip" style="margin:-1px -1px 30px;border-radius:var(--radius);">
+      <div class="filter-tabs" style="padding-top:20px;padding-bottom:20px;">
+        <button class="filter-tab is-active" data-filter="all">All Products</button>
+        <button class="filter-tab" data-filter="apparel">Apparel</button>
+        <button class="filter-tab" data-filter="drinkware">Drinkware</button>
+        <button class="filter-tab" data-filter="bags">Bags &amp; Accessories</button>
+        <button class="filter-tab" data-filter="tech">Tech</button>
+        <button class="filter-tab" data-filter="print">Stationery &amp; Print</button>
+      </div>
+    </div>
+
+    <div class="studio-layout">
+
+      <!-- PRODUCT SELECTOR -->
+      <div class="studio-panel">
+        <h4>Choose A Product</h4>
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+
+      <!-- CANVAS PREVIEW -->
+      <div class="studio-canvas-wrap">
+        <div class="studio-product-name" id="studioProductName">T-Shirt</div>
+        <p class="studio-hint">Drag your logo to reposition it on the product.</p>
+
+        <div class="studio-canvas" id="studioCanvas">
+          <img class="mockup-base" id="mockupImage" alt="Product mockup preview" />
+          <img class="logo-overlay" id="logoOverlay" alt="Your logo" />
+        </div>
+
+        <div class="position-btns">
+          <button type="button" data-position="left-chest">Left</button>
+          <button type="button" data-position="center" class="is-active">Center</button>
+          <button type="button" data-position="right-chest">Right</button>
+        </div>
+
+        <div class="studio-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="resetLogoBtn">Reset Logo</button>
+          <button type="button" class="btn btn-primary btn-sm" id="downloadBtn">Download PNG <i class="fa-solid fa-download"></i></button>
+        </div>
+      </div>
+
+      <!-- CONTROLS + ENQUIRY -->
+      <div>
+        <div class="studio-panel" style="margin-bottom:20px;">
+          <h4>Your Logo</h4>
+          <label class="upload-box" for="logoUpload">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Click to upload your logo</span>
+            <small>PNG, JPG or SVG — under 5MB</small>
+          </label>
+          <input type="file" id="logoUpload" accept="image/*" style="display:none;" />
+          <div id="logoFileName"></div>
+
+          <div class="studio-field" style="margin-top:20px;">
+            <label>Product Colour</label>
+            <div class="color-swatches" id="colorSwatches">
+              <span class="swatch is-active" data-color="#ffffff" style="background:#ffffff;" title="White"></span>
+              <span class="swatch" data-color="#0b1c3f" style="background:#0b1c3f;" title="Navy"></span>
+              <span class="swatch" data-color="#ff3a1a" style="background:#ff3a1a;" title="Flame"></span>
+              <span class="swatch" data-color="#ffa41f" style="background:#ffa41f;" title="Amber"></span>
+              <span class="swatch" data-color="#111111" style="background:#111111;" title="Black"></span>
+              <span class="swatch" data-color="#9ca3af" style="background:#9ca3af;" title="Grey"></span>
+            </div>
+          </div>
+
+          <div class="studio-field">
+            <label>Logo Size</label>
+            <input type="range" class="size-range" id="sizeRange" min="40" max="200" value="110" />
+          </div>
+        </div>
+
+        <div class="studio-panel contact-card">
+          <h4 style="font-family:var(--display);font-size:20px;text-transform:none;letter-spacing:0;color:var(--navy-deep);margin-bottom:6px;">Send Us Your Design</h4>
+          <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:18px;">Happy with the mockup? Fill this in and we'll get back to you with pricing and timelines.</p>
+          <form id="studioForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="studioName">Full Name</label>
+                <input type="text" id="studioName" placeholder="Your name" required />
+              </div>
+              <div class="form-group">
+                <label for="studioPhone">Phone Number</label>
+                <input type="tel" id="studioPhone" placeholder="+234 800 000 0000" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="studioEmail">Email Address</label>
+                <input type="email" id="studioEmail" placeholder="you@company.com" required />
+              </div>
+              <div class="form-group">
+                <label for="studioQty">Quantity Needed</label>
+                <input type="number" id="studioQty" placeholder="e.g. 100" min="1" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label for="studioNotes">Additional Notes</label>
+                <textarea id="studioNotes" placeholder="Anything else we should know — timeline, budget, delivery location..."></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Send My Mockup <i class="fa-solid fa-paper-plane"></i></button>
+            <p id="studioFormNote" style="display:none;margin-top:14px;color:var(--flame);font-weight:600;font-size:14px;"></p>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner halftone">
+  <div class="container">
+    <div class="cta-inner">
+      <div>
+        <h2>Need Something More Custom?</h2>
+        <p>Our design team can build fully custom mockups beyond what's available in the Studio — just reach out and describe what you have in mind.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="contact.html" class="btn btn-primary">Talk To Our Team</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/images/logo.jpg" alt="Creative Branding Solutions logo" />
+          <div class="footer-brand-name">CREATIVE BRANDING<span>SOLUTIONS</span></div>
+        </div>
+        <p>Nigeria's full-service branding and print partner. We help businesses express their identity through print, outdoor media and promotional products, wherever their customers are.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="mockup-studio.html">Mockup Studio</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Our Services</h4>
+        <ul>
+          <li><a href="services.html#print">Commercial Printing</a></li>
+          <li><a href="services.html#outdoor">Outdoor Advertising</a></li>
+          <li><a href="services.html#vehicle">Vehicle Branding</a></li>
+          <li><a href="services.html#gifts">Promotional Gifts</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact Us</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> &nbsp;Lagos, Nigeria</li>
+          <li><i class="fa-solid fa-phone"></i> &nbsp;+234 806 000 1122</li>
+          <li><i class="fa-solid fa-envelope"></i> &nbsp;hello@creativebrandingsolutions.ng</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Creative Branding Solutions. All rights reserved.</span>
+      <span><a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a></span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/2348060001122" class="wa-float" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/mockup-studio.js"></script>
+</body>
+</html>

@@ -58,12 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (slides.length > 1) startAutoplay();
   }
 
-  // Portfolio filter tabs
-  var gallery = document.querySelector('#portfolioGallery');
+  // Filterable galleries (Portfolio, Mockups, etc.)
+  var gallery = document.querySelector('.gallery');
   var tabs = document.querySelectorAll('.filter-tab');
   if (gallery && tabs.length) {
-    var items = gallery.querySelectorAll('figure');
-    var emptyMsg = document.querySelector('#filterEmpty');
+    var items = gallery.querySelectorAll('figure[data-cat]');
+    var emptyMsg = document.querySelector('.filter-empty');
 
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function () {
