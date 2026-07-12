@@ -1,21 +1,55 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Mobile nav toggle
+  // Mobile nav toggle — class-based so it never fights the CSS breakpoints
+  // (the old version wrote inline display:none/flex, which could get stuck
+  // and hide the nav on desktop after a resize).
   var toggle = document.querySelector('.navtoggle');
   var links = document.querySelector('.navlinks');
+  var navOverlay = document.querySelector('.nav-overlay');
+
   if (toggle && links) {
-    toggle.addEventListener('click', function () {
-      var open = links.style.display === 'flex';
-      links.style.display = open ? 'none' : 'flex';
-      links.style.flexDirection = 'column';
-      links.style.position = 'absolute';
-      links.style.top = '100%';
-      links.style.left = '0';
-      links.style.right = '0';
-      links.style.background = '#ffffff';
-      links.style.padding = '18px 24px';
-      links.style.borderBottom = '1px solid #e4e1d6';
-      links.style.gap = '18px';
-      links.style.zIndex = '150';
+    toggle.setAttribute('aria-expanded', 'false');
+
+    function openMenu() {
+      links.classList.add('is-open');
+      toggle.classList.add('is-active');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      if (navOverlay) navOverlay.classList.add('is-visible');
+      document.body.classList.add('nav-open');
+    }
+    function closeMenu() {
+      links.classList.remove('is-open');
+      toggle.classList.remove('is-active');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      if (navOverlay) navOverlay.classList.remove('is-visible');
+      document.body.classList.remove('nav-open');
+    }
+
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (links.classList.contains('is-open')) closeMenu(); else openMenu();
+    });
+
+    // Close the menu whenever a nav link is tapped.
+    links.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', closeMenu);
+    });
+
+    // Close on outside tap/click.
+    if (navOverlay) navOverlay.addEventListener('click', closeMenu);
+    document.addEventListener('click', function (e) {
+      if (links.classList.contains('is-open') && !links.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    // Close on Escape, and if the viewport is resized back to desktop.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900) closeMenu();
     });
   }
 

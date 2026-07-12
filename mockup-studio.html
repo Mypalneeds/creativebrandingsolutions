@@ -46,6 +46,7 @@
     </div>
     <button class="navtoggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
   </nav>
+<div class="nav-overlay"></div>
 </div>
 
 <!-- PAGE HEAD -->
@@ -77,6 +78,17 @@
       <!-- PRODUCT SELECTOR -->
       <div class="studio-panel">
         <h4>Choose A Product</h4>
+
+        <label class="upload-box upload-box-compact" for="mockupUpload">
+          <i class="fa-solid fa-image"></i>
+          <span>Or upload your own mockup photo</span>
+          <small>PNG or JPG — under 8MB</small>
+        </label>
+        <input type="file" id="mockupUpload" accept="image/*" style="display:none;" />
+        <p id="customMockupNote" style="display:none;font-size:12.5px;color:var(--ink-soft);margin:-8px 0 14px;">
+          Using your uploaded photo — <a href="#" id="clearCustomMockup" style="color:var(--flame);font-weight:600;">use a library product instead</a>
+        </p>
+
         <div class="product-grid" id="productGrid"></div>
       </div>
 
@@ -114,15 +126,54 @@
           <input type="file" id="logoUpload" accept="image/*" style="display:none;" />
           <div id="logoFileName"></div>
 
-          <div class="studio-field" style="margin-top:20px;">
-            <label>Product Colour</label>
-            <div class="color-swatches" id="colorSwatches">
-              <span class="swatch is-active" data-color="#ffffff" style="background:#ffffff;" title="White"></span>
-              <span class="swatch" data-color="#0b1c3f" style="background:#0b1c3f;" title="Navy"></span>
-              <span class="swatch" data-color="#ff3a1a" style="background:#ff3a1a;" title="Flame"></span>
-              <span class="swatch" data-color="#ffa41f" style="background:#ffa41f;" title="Amber"></span>
-              <span class="swatch" data-color="#111111" style="background:#111111;" title="Black"></span>
-              <span class="swatch" data-color="#9ca3af" style="background:#9ca3af;" title="Grey"></span>
+          <div class="studio-field" id="colorControlsField" style="margin-top:20px;">
+            <div class="color-mode-toggle" id="colorModeToggle">
+              <button type="button" class="is-active" data-mode="solid">Solid Colour</button>
+              <button type="button" data-mode="gradient">Gradient</button>
+            </div>
+
+            <div id="solidColorPanel">
+              <label>Product Colour</label>
+              <div class="color-swatches" id="colorSwatches">
+                <span class="swatch is-active" data-color="#ffffff" style="background:#ffffff;" title="White"></span>
+                <span class="swatch" data-color="#0b1c3f" style="background:#0b1c3f;" title="Navy"></span>
+                <span class="swatch" data-color="#ff3a1a" style="background:#ff3a1a;" title="Flame"></span>
+                <span class="swatch" data-color="#ffa41f" style="background:#ffa41f;" title="Amber"></span>
+                <span class="swatch" data-color="#111111" style="background:#111111;" title="Black"></span>
+                <span class="swatch" data-color="#9ca3af" style="background:#9ca3af;" title="Grey"></span>
+                <span class="swatch" data-color="#0a2e6e" style="background:#0a2e6e;" title="Royal Blue"></span>
+                <span class="swatch" data-color="#146c43" style="background:#146c43;" title="Forest Green"></span>
+                <span class="swatch" data-color="#7c1d3f" style="background:#7c1d3f;" title="Maroon"></span>
+                <span class="swatch" data-color="#6d28d9" style="background:#6d28d9;" title="Purple"></span>
+                <span class="swatch" data-color="#0891b2" style="background:#0891b2;" title="Teal"></span>
+                <span class="swatch" data-color="#f472b6" style="background:#f472b6;" title="Pink"></span>
+                <span class="swatch" data-color="#fde047" style="background:#fde047;" title="Yellow"></span>
+                <span class="swatch" data-color="#78350f" style="background:#78350f;" title="Brown"></span>
+                <span class="swatch" data-color="#efe4d0" style="background:#efe4d0;" title="Cream"></span>
+                <label class="swatch swatch-custom" title="Pick any colour">
+                  <input type="color" id="customColorInput" value="#ff3a1a" />
+                </label>
+              </div>
+            </div>
+
+            <div id="gradientColorPanel" style="display:none;">
+              <label>Gradient Colours</label>
+              <div class="gradient-controls">
+                <label class="gradient-color-field">
+                  <span>Start</span>
+                  <input type="color" id="gradientFrom" value="#ff3a1a" />
+                </label>
+                <label class="gradient-color-field">
+                  <span>End</span>
+                  <input type="color" id="gradientTo" value="#0a2e6e" />
+                </label>
+              </div>
+              <div class="gradient-direction-btns" id="gradientDirection">
+                <button type="button" class="is-active" data-dir="diagonal" title="Diagonal"><i class="fa-solid fa-arrow-down-long" style="transform:rotate(-45deg);"></i></button>
+                <button type="button" data-dir="vertical" title="Vertical"><i class="fa-solid fa-arrow-down-long"></i></button>
+                <button type="button" data-dir="horizontal" title="Horizontal"><i class="fa-solid fa-arrow-right-long"></i></button>
+                <button type="button" data-dir="radial" title="Radial"><i class="fa-solid fa-circle-notch"></i></button>
+              </div>
             </div>
           </div>
 

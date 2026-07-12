@@ -51,28 +51,107 @@
     var brightness = (((f >> 16) & 0xff) * 299 + ((f >> 8) & 0xff) * 587 + (f & 0xff) * 114) / 1000;
     return brightness > 200 ? shade(hex, -22) : shade(hex, 32);
   }
+  // Blends two hex colors (weight 0 = all a, 1 = all b) — used to pick a
+  // sensible accent color (stitching, outlines) when a gradient is applied.
+  function mixHex(a, b, weight) {
+    var fa = parseInt(a.slice(1), 16), fb = parseInt(b.slice(1), 16);
+    var Ra = (fa >> 16) & 0xff, Ga = (fa >> 8) & 0xff, Ba = fa & 0xff;
+    var Rb = (fb >> 16) & 0xff, Gb = (fb >> 8) & 0xff, Bb = fb & 0xff;
+    var r = clamp(Math.round(Ra + (Rb - Ra) * weight));
+    var g = clamp(Math.round(Ga + (Gb - Ga) * weight));
+    var b2 = clamp(Math.round(Ba + (Bb - Ba) * weight));
+    return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b2).toString(16).slice(1);
+  }
 
-  /* ---------- Shared SVG building blocks ---------- */
-  function svgOpen(id, c) {
-    var light = shade(c, 30);
-    var dark = shade(c, -16);
+  /* ---------- Shared SVG building blocks ----------
+     Everything in this block is reused by all 20 product generators below,
+     so improving it here upgrades every product mockup automatically —
+     no need to touch the individual generator functions. */
+  function svgOpen(id, colorSpec) {
+    var isGradient = colorSpec && typeof colorSpec === 'object';
+    // `c` is the color every generator's accent details (stitching, seams,
+    // outlines) are derived from — for a gradient we blend the two picked
+    // colors so accents stay coherent with whatever the user chose.
+    var c = isGradient ? mixHex(colorSpec.from, colorSpec.to, 0.5) : colorSpec;
+    var light2 = shade(c, 46);   // brightest specular highlight
+    var light = shade(c, 22);    // soft upper highlight
+    var dark = shade(c, -15);    // core shadow
+    var dark2 = shade(c, -32);   // deepest falloff / occlusion
     var stroke = outline(c);
+
+    var bodyGradientTag;
+    if (isGradient) {
+      var from = colorSpec.from, to = colorSpec.to;
+      var edgeLight = shade(from, 25);
+      var edgeDark = shade(to, -25);
+      var stops =
+        "<stop offset='0%' stop-color='" + edgeLight + "'/>" +
+        "<stop offset='28%' stop-color='" + from + "'/>" +
+        "<stop offset='72%' stop-color='" + to + "'/>" +
+        "<stop offset='100%' stop-color='" + edgeDark + "'/>";
+      if (colorSpec.direction === 'radial') {
+        bodyGradientTag = "<radialGradient id='g" + id + "' cx='42%' cy='32%' r='75%'>" + stops + "</radialGradient>";
+      } else {
+        var coords = { diagonal: "x1='15%' y1='0%' x2='85%' y2='100%'", vertical: "x1='50%' y1='0%' x2='50%' y2='100%'", horizontal: "x1='0%' y1='50%' x2='100%' y2='50%'" };
+        bodyGradientTag = "<linearGradient id='g" + id + "' " + (coords[colorSpec.direction] || coords.diagonal) + ">" + stops + "</linearGradient>";
+      }
+    } else {
+      // Richer multi-stop body gradient (was 3 stops, now 5) for a more
+      // dimensional, "studio photographed" material read.
+      bodyGradientTag =
+        "<linearGradient id='g" + id + "' x1='18%' y1='0%' x2='82%' y2='100%'>" +
+        "<stop offset='0%' stop-color='" + light2 + "'/>" +
+        "<stop offset='24%' stop-color='" + light + "'/>" +
+        "<stop offset='52%' stop-color='" + c + "'/>" +
+        "<stop offset='78%' stop-color='" + dark + "'/>" +
+        "<stop offset='100%' stop-color='" + dark2 + "'/>" +
+        "</linearGradient>";
+    }
+
     var defs =
       "<defs>" +
-      "<linearGradient id='g" + id + "' x1='15%' y1='0%' x2='85%' y2='100%'>" +
-      "<stop offset='0%' stop-color='" + light + "'/>" +
-      "<stop offset='55%' stop-color='" + c + "'/>" +
-      "<stop offset='100%' stop-color='" + dark + "'/>" +
+      bodyGradientTag +
+      // Subtle top-down sheen usable as a glossy overlay highlight.
+      "<linearGradient id='sheen" + id + "' x1='0%' y1='0%' x2='0%' y2='100%'>" +
+      "<stop offset='0%' stop-color='#ffffff' stop-opacity='0.35'/>" +
+      "<stop offset='16%' stop-color='#ffffff' stop-opacity='0.06'/>" +
+      "<stop offset='100%' stop-color='#ffffff' stop-opacity='0'/>" +
       "</linearGradient>" +
+      // Soft contact/ambient shadow gradient (used with a blur filter below).
       "<radialGradient id='shadow" + id + "' cx='50%' cy='50%' r='50%'>" +
-      "<stop offset='0%' stop-color='#000000' stop-opacity='0.16'/>" +
+      "<stop offset='0%' stop-color='#000000' stop-opacity='0.20'/>" +
+      "<stop offset='55%' stop-color='#000000' stop-opacity='0.09'/>" +
       "<stop offset='100%' stop-color='#000000' stop-opacity='0'/>" +
       "</radialGradient>" +
+      "<filter id='blur" + id + "' x='-60%' y='-60%' width='220%' height='220%'>" +
+      "<feGaussianBlur stdDeviation='10'/>" +
+      "</filter>" +
       "</defs>";
-    return { defs: defs, fill: "url(#g" + id + ")", stroke: stroke, light: light, dark: dark };
+    return { defs: defs, fill: "url(#g" + id + ")", stroke: stroke, light: light, light2: light2, dark: dark, dark2: dark2, sheen: "url(#sheen" + id + ")" };
   }
+  // Two-layer soft shadow: a wide, heavily blurred ambient shadow for
+  // grounding + a tighter gradient contact shadow for definition.
   function groundShadow(id, cx, cy, rx, ry) {
-    return "<ellipse cx='" + cx + "' cy='" + cy + "' rx='" + rx + "' ry='" + ry + "' fill='url(#shadow" + id + ")'/>";
+    return "<ellipse cx='" + cx + "' cy='" + (cy + ry * 0.35) + "' rx='" + (rx * 1.35) + "' ry='" + (ry * 1.2) + "' fill='#0a1220' opacity='0.10' filter='url(#blur" + id + ")'/>" +
+      "<ellipse cx='" + cx + "' cy='" + cy + "' rx='" + rx + "' ry='" + ry + "' fill='url(#shadow" + id + ")'/>";
+  }
+  // Neutral studio backdrop (gradient + vignette) drawn behind every mockup.
+  // Colour-independent, so it never needs per-product edits either.
+  function studioBackdrop(uid) {
+    return "<defs>" +
+      "<linearGradient id='backdrop" + uid + "' x1='0%' y1='0%' x2='0%' y2='100%'>" +
+      "<stop offset='0%' stop-color='#eef1f6'/>" +
+      "<stop offset='58%' stop-color='#e4e8ef'/>" +
+      "<stop offset='100%' stop-color='#d6dbe4'/>" +
+      "</linearGradient>" +
+      "<radialGradient id='vignette" + uid + "' cx='50%' cy='36%' r='78%'>" +
+      "<stop offset='0%' stop-color='#ffffff' stop-opacity='0.55'/>" +
+      "<stop offset='55%' stop-color='#ffffff' stop-opacity='0'/>" +
+      "<stop offset='100%' stop-color='#000000' stop-opacity='0.12'/>" +
+      "</radialGradient>" +
+      "</defs>" +
+      "<rect x='0' y='0' width='400' height='500' fill='url(#backdrop" + uid + ")'/>" +
+      "<rect x='0' y='0' width='400' height='500' fill='url(#vignette" + uid + ")'/>";
   }
 
   /* ---------- SVG generators (realistic shaded product renders) ---------- */
@@ -294,12 +373,20 @@
 
   function svgToDataUrl(id, color) {
     var svg = generators[id](color);
+    // Every generator returns a self-contained <svg>...</svg> string. We
+    // splice the shared studio backdrop in right after the opening tag —
+    // this is the one place that touches all products, so the backdrop
+    // (and any future shared-engine upgrade) never requires editing the
+    // 20 individual generator functions above.
+    svg = svg.replace(/(<svg[^>]*>)/, '$1' + studioBackdrop(id));
     return 'data:image/svg+xml,' + encodeURIComponent(svg);
   }
 
   /* ---------- State ---------- */
   var currentProduct = products[0];
-  var currentColor = '#ffffff';
+  var currentColor = '#ffffff';           // string (solid) or {mode:'gradient', from, to, direction}
+  var colorMode = 'solid';                // 'solid' | 'gradient'
+  var isCustomMockup = false;             // true when the user uploaded their own base photo
   var currentPosition = 'center';
   var logoDataUrl = null;
   var isDragging = false;
@@ -321,6 +408,18 @@
   var studioCanvas = document.getElementById('studioCanvas');
   var filterTabs = document.querySelectorAll('.filter-tabs .filter-tab');
 
+  var colorControlsField = document.getElementById('colorControlsField');
+  var colorModeToggle = document.getElementById('colorModeToggle');
+  var solidColorPanel = document.getElementById('solidColorPanel');
+  var gradientColorPanel = document.getElementById('gradientColorPanel');
+  var customColorInput = document.getElementById('customColorInput');
+  var gradientFrom = document.getElementById('gradientFrom');
+  var gradientTo = document.getElementById('gradientTo');
+  var gradientDirection = document.getElementById('gradientDirection');
+  var mockupUpload = document.getElementById('mockupUpload');
+  var customMockupNote = document.getElementById('customMockupNote');
+  var clearCustomMockup = document.getElementById('clearCustomMockup');
+
   /* ---------- Build product grid ---------- */
   products.forEach(function (p, index) {
     var thumb = document.createElement('div');
@@ -333,6 +432,7 @@
 
   function selectProduct(product, thumbEl) {
     currentProduct = product;
+    exitCustomMockupMode();
     document.querySelectorAll('.product-thumb').forEach(function (t) { t.classList.remove('is-active'); });
     thumbEl.classList.add('is-active');
     studioProductName.textContent = product.name;
@@ -401,14 +501,101 @@
   }
   sizeRange.addEventListener('input', function () { applySize(sizeRange.value); });
 
-  /* ---------- Color swatches ---------- */
-  colorSwatches.querySelectorAll('.swatch').forEach(function (swatch) {
+  /* ---------- Color swatches (solid mode) ---------- */
+  function setActiveSwatch(target) {
+    colorSwatches.querySelectorAll('.swatch').forEach(function (s) { s.classList.remove('is-active'); });
+    if (target) target.classList.add('is-active');
+  }
+  colorSwatches.querySelectorAll('.swatch:not(.swatch-custom)').forEach(function (swatch) {
     swatch.addEventListener('click', function () {
-      colorSwatches.querySelectorAll('.swatch').forEach(function (s) { s.classList.remove('is-active'); });
-      swatch.classList.add('is-active');
+      setActiveSwatch(swatch);
       currentColor = swatch.getAttribute('data-color');
-      mockupImage.src = svgToDataUrl(currentProduct.id, currentColor);
+      refreshMockupColor();
     });
+  });
+  customColorInput.addEventListener('input', function () {
+    setActiveSwatch(customColorInput.closest('.swatch-custom'));
+    currentColor = customColorInput.value;
+    refreshMockupColor();
+  });
+
+  /* ---------- Solid / Gradient mode toggle ---------- */
+  colorModeToggle.querySelectorAll('button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      colorModeToggle.querySelectorAll('button').forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      colorMode = btn.getAttribute('data-mode');
+      solidColorPanel.style.display = colorMode === 'solid' ? 'block' : 'none';
+      gradientColorPanel.style.display = colorMode === 'gradient' ? 'block' : 'none';
+      if (colorMode === 'solid') {
+        var activeSwatch = colorSwatches.querySelector('.swatch.is-active:not(.swatch-custom)');
+        currentColor = activeSwatch ? activeSwatch.getAttribute('data-color') : customColorInput.value;
+      } else {
+        currentColor = buildGradientSpec();
+      }
+      refreshMockupColor();
+    });
+  });
+
+  /* ---------- Gradient controls ---------- */
+  function buildGradientSpec() {
+    var dirBtn = gradientDirection.querySelector('button.is-active');
+    return {
+      mode: 'gradient',
+      from: gradientFrom.value,
+      to: gradientTo.value,
+      direction: dirBtn ? dirBtn.getAttribute('data-dir') : 'diagonal'
+    };
+  }
+  gradientFrom.addEventListener('input', function () { currentColor = buildGradientSpec(); refreshMockupColor(); });
+  gradientTo.addEventListener('input', function () { currentColor = buildGradientSpec(); refreshMockupColor(); });
+  gradientDirection.querySelectorAll('button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      gradientDirection.querySelectorAll('button').forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      currentColor = buildGradientSpec();
+      refreshMockupColor();
+    });
+  });
+
+  // Applies the current color/gradient to whichever product is on canvas —
+  // no-op while a custom uploaded photo is showing, since recoloring only
+  // makes sense for the generated product SVGs.
+  function refreshMockupColor() {
+    if (isCustomMockup) return;
+    mockupImage.src = svgToDataUrl(currentProduct.id, currentColor);
+  }
+
+  /* ---------- Upload your own mockup photo ---------- */
+  function exitCustomMockupMode() {
+    if (!isCustomMockup) return;
+    isCustomMockup = false;
+    customMockupNote.style.display = 'none';
+    colorControlsField.classList.remove('is-disabled');
+  }
+  mockupUpload.addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      alert('That photo is a bit large — please upload an image under 8MB.');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (evt) {
+      isCustomMockup = true;
+      currentProduct = { id: 'custom', name: 'Your Mockup', cat: 'custom' };
+      mockupImage.src = evt.target.result;
+      studioProductName.textContent = 'Your Custom Mockup';
+      document.querySelectorAll('.product-thumb').forEach(function (t) { t.classList.remove('is-active'); });
+      customMockupNote.style.display = 'block';
+      colorControlsField.classList.add('is-disabled');
+    };
+    reader.readAsDataURL(file);
+  });
+  clearCustomMockup.addEventListener('click', function (e) {
+    e.preventDefault();
+    var firstThumb = document.querySelector('.product-thumb');
+    if (firstThumb) selectProduct(products[0], firstThumb);
   });
 
   /* ---------- Drag to reposition ---------- */
