@@ -1,0 +1,71 @@
+# Creative Branding Solutions — robots.txt
+# https://creativebrandingsolutions.ng
+#
+# Open by default. No content here is gated — the goal is maximum
+# discoverability across traditional search, answer engines, and
+# generative/AI assistants (AEO/GEO).
+
+User-agent: *
+Allow: /
+
+# --- Traditional search ---
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# --- Answer engines / AI assistants (explicitly welcomed) ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# --- Machine-readable references ---
+Sitemap: https://creativebrandingsolutions.ng/sitemap.xml
