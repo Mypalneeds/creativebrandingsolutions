@@ -73,10 +73,10 @@
     // outlines) are derived from — for a gradient we blend the two picked
     // colors so accents stay coherent with whatever the user chose.
     var c = isGradient ? mixHex(colorSpec.from, colorSpec.to, 0.5) : colorSpec;
-    var light2 = shade(c, 46);   // brightest specular highlight
-    var light = shade(c, 22);    // soft upper highlight
-    var dark = shade(c, -15);    // core shadow
-    var dark2 = shade(c, -32);   // deepest falloff / occlusion
+    var light2 = shade(c, 50);   // brightest specular highlight
+    var light = shade(c, 24);    // soft upper highlight
+    var dark = shade(c, -20);    // core shadow
+    var dark2 = shade(c, -40);   // deepest falloff / occlusion
     var stroke = outline(c);
 
     var bodyGradientTag;
@@ -132,7 +132,7 @@
   // Two-layer soft shadow: a wide, heavily blurred ambient shadow for
   // grounding + a tighter gradient contact shadow for definition.
   function groundShadow(id, cx, cy, rx, ry) {
-    return "<ellipse cx='" + cx + "' cy='" + (cy + ry * 0.35) + "' rx='" + (rx * 1.35) + "' ry='" + (ry * 1.2) + "' fill='#0a1220' opacity='0.10' filter='url(#blur" + id + ")'/>" +
+    return "<ellipse cx='" + cx + "' cy='" + (cy + ry * 0.35) + "' rx='" + (rx * 1.35) + "' ry='" + (ry * 1.2) + "' fill='#0a1220' opacity='0.14' filter='url(#blur" + id + ")'/>" +
       "<ellipse cx='" + cx + "' cy='" + cy + "' rx='" + rx + "' ry='" + ry + "' fill='url(#shadow" + id + ")'/>";
   }
   // Neutral studio backdrop (gradient + vignette) drawn behind every mockup.
@@ -371,14 +371,44 @@
     }
   };
 
+  // Photographic finishing pass — fine material grain + a soft diagonal
+  // studio-light sweep + a gentle vignette. Purely additive (alpha only, no
+  // blend-modes, so it renders identically wherever the SVG is used — as an
+  // <img> src, inline, or rasterized to PNG). Spliced in once per render in
+  // svgToDataUrl below, so every one of the 20 products gets it for free.
+  function realismPass(uid) {
+    return "<defs>" +
+      "<filter id='grain" + uid + "' x='0' y='0' width='100%' height='100%'>" +
+      "<feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' result='n'/>" +
+      "<feColorMatrix in='n' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0'/>" +
+      "</filter>" +
+      "<linearGradient id='sweep" + uid + "' x1='8%' y1='0%' x2='78%' y2='100%'>" +
+      "<stop offset='0%' stop-color='#ffffff' stop-opacity='0.20'/>" +
+      "<stop offset='26%' stop-color='#ffffff' stop-opacity='0'/>" +
+      "<stop offset='70%' stop-color='#ffffff' stop-opacity='0'/>" +
+      "<stop offset='100%' stop-color='#000000' stop-opacity='0.06'/>" +
+      "</linearGradient>" +
+      "<radialGradient id='vig" + uid + "' cx='50%' cy='40%' r='74%'>" +
+      "<stop offset='0%' stop-color='#000000' stop-opacity='0'/>" +
+      "<stop offset='70%' stop-color='#000000' stop-opacity='0'/>" +
+      "<stop offset='100%' stop-color='#000000' stop-opacity='0.10'/>" +
+      "</radialGradient>" +
+      "</defs>" +
+      "<rect x='0' y='0' width='400' height='500' filter='url(#grain" + uid + ")' pointer-events='none'/>" +
+      "<rect x='0' y='0' width='400' height='500' fill='url(#sweep" + uid + ")' pointer-events='none'/>" +
+      "<rect x='0' y='0' width='400' height='500' fill='url(#vig" + uid + ")' pointer-events='none'/>";
+  }
+
   function svgToDataUrl(id, color) {
     var svg = generators[id](color);
     // Every generator returns a self-contained <svg>...</svg> string. We
-    // splice the shared studio backdrop in right after the opening tag —
-    // this is the one place that touches all products, so the backdrop
-    // (and any future shared-engine upgrade) never requires editing the
-    // 20 individual generator functions above.
+    // splice the shared studio backdrop in right after the opening tag, and
+    // the realism pass in right before the closing tag — the two places
+    // that touch all products, so upgrading the shared "camera" (backdrop,
+    // grain, light sweep, vignette) never requires editing the 20
+    // individual generator functions above.
     svg = svg.replace(/(<svg[^>]*>)/, '$1' + studioBackdrop(id));
+    svg = svg.replace(/<\/svg>\s*$/, realismPass(id) + '</svg>');
     return 'data:image/svg+xml,' + encodeURIComponent(svg);
   }
 
