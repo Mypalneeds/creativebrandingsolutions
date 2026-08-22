@@ -159,52 +159,79 @@
 
     tshirt: function (c) {
       var s = svgOpen('tshirt', c);
+      var d = "M172,42 Q200,62 228,42 L252,54 L302,66 Q320,72 322,90 L324,104 Q324,118 306,122 L288,124 Q266,116 250,98 L256,180 L252,260 L246,300 Q200,310 154,300 L148,260 L144,180 L150,98 Q134,116 112,124 L94,122 Q76,118 76,104 L78,90 Q80,72 98,66 L148,54 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('tshirt', 200, 470, 130, 16) +
-        "<path d='M100 50 L120 30 L140 30 Q150 30 150 40 L150 100 L250 100 L250 40 Q250 30 260 30 L280 30 L300 50 L320 80 L330 90 L330 120 L310 120 L310 480 Q310 490 300 490 L100 490 Q90 490 90 480 L90 120 L70 120 L70 90 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M150 40 Q200 62 250 40' fill='none' stroke='" + s.dark + "' stroke-width='4' stroke-linecap='round' opacity='0.55'/>" +
-        "<path d='M150 100 Q200 118 250 100' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.35'/>" +
-        "<path d='M110 140 Q108 300 112 460 M290 140 Q292 300 288 460' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.25'/>" +
+        groundShadow('tshirt', 200, 340, 108, 15) +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
+        "<path d='M172,42 Q200,62 228,42' fill='none' stroke='" + s.stroke + "' stroke-width='3' stroke-linecap='round' opacity='0.7'/>" +
+        "<path d='M148,54 L150,98 M252,54 L250,98' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
+        "<path d='M146,190 Q200,200 254,190' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.22'/>" +
         "</svg>";
     },
 
     hoodie: function (c) {
       var s = svgOpen('hoodie', c);
+      var d = "M176,58 L252,58 L308,68 Q326,76 328,94 L332,224 Q332,240 316,246 L296,244 L252,116 L258,190 L254,300 L248,392 Q200,404 152,392 L146,300 L142,190 L148,116 L104,244 L84,246 Q68,240 68,224 L72,94 Q74,76 92,68 L148,58 Z";
+      var hood = "M158,64 Q160,14 200,12 Q240,14 242,64 Q238,66 232,60 Q216,44 200,44 Q184,44 168,60 Q162,66 158,64 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('hoodie', 200, 480, 140, 16) +
-        "<path d='M90 60 L110 30 L130 20 Q150 20 150 40 L150 60 L170 50 L230 50 L250 60 L250 40 Q250 20 270 20 L290 30 L310 60 L330 80 L340 100 L340 140 L320 140 L320 480 Q320 495 305 495 L95 495 Q80 495 80 480 L80 140 L60 140 L60 100 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M150 40 Q200 5 250 40 Q200 55 150 40' fill='" + s.dark + "' opacity='0.45'/>" +
-        "<path d='M185 90 L182 200 M215 90 L218 200' fill='none' stroke='" + s.dark + "' stroke-width='2' opacity='0.5'/>" +
-        "<rect x='160' y='195' width='80' height='60' rx='8' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
+        groundShadow('hoodie', 200, 430, 122, 15) +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
+        "<path d='" + hood + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + hood + "' fill='" + s.sheen + "'/>" +
+        "<path d='M200,20 Q182,34 176,58 M200,20 Q218,34 224,58' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4' fill='none'/>" +
+        "<circle cx='186' cy='74' r='2.8' fill='" + s.stroke + "' opacity='0.75'/><circle cx='214' cy='74' r='2.8' fill='" + s.stroke + "' opacity='0.75'/>" +
+        "<path d='M186,74 Q182,108 176,140 M214,74 Q218,108 224,140' fill='none' stroke='" + s.dark + "' stroke-width='2' opacity='0.5'/>" +
+        "<path d='M296,220 L332,206 L332,240 Q332,246 326,247 L300,244 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
+        "<path d='M104,220 L68,206 L68,240 Q68,246 74,247 L100,244 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
+        "<path d='M154,260 Q200,278 246,260 L250,330 Q200,346 150,330 Z' fill='none' stroke='" + s.stroke + "' stroke-width='1.8' opacity='0.55'/>" +
+        "<path d='M154,260 Q200,278 246,260' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.3'/>" +
+        "<path d='M152,384 Q200,396 248,384' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.3'/>" +
         "</svg>";
     },
 
     tanktop: function (c) {
       var s = svgOpen('tanktop', c);
+      var d = "M175,50 Q200,82 225,50 Q246,58 254,80 Q262,100 256,128 L260,220 L256,300 L250,352 Q200,364 150,352 L144,300 L140,220 L144,128 Q138,100 146,80 Q154,58 175,50 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('tanktop', 200, 475, 100, 14) +
-        "<path d='M120 50 L140 30 Q150 30 150 40 L150 100 L250 100 L250 40 Q250 30 260 30 L280 50 L280 480 Q280 490 270 490 L130 490 Q120 490 120 480 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M150 40 Q200 58 250 40' fill='none' stroke='" + s.dark + "' stroke-width='3' opacity='0.5'/>" +
+        groundShadow('tanktop', 200, 360, 98, 14) +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
+        "<path d='M182,50 L188,20 Q188,16 194,16 L198,16 L198,46 M218,50 L212,20 Q212,16 206,16 L202,16 L202,46' fill='none' stroke='" + s.stroke + "' stroke-width='2' stroke-linejoin='round' opacity='0.85'/>" +
+        "<path d='M175,50 Q200,78 225,50' fill='none' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linecap='round' opacity='0.6'/>" +
+        "<path d='M254,80 Q262,100 256,128 M146,80 Q138,100 144,128' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
+        "<path d='M142,240 Q200,250 258,240' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.2'/>" +
         "</svg>";
     },
 
     longsleeve: function (c) {
       var s = svgOpen('longsleeve', c);
+      var d = "M172,42 Q200,62 228,42 L252,54 L296,64 Q312,70 314,86 L326,240 Q328,254 314,258 L296,254 L262,148 L256,180 L252,260 L246,300 Q200,310 154,300 L148,260 L144,180 L138,148 L104,254 L86,258 Q72,254 74,240 L86,86 Q88,70 104,64 L148,54 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('longsleeve', 200, 480, 140, 16) +
-        "<path d='M50 80 L100 50 L120 30 L140 30 Q150 30 150 40 L150 100 L250 100 L250 40 Q250 30 260 30 L280 30 L300 50 L350 80 L360 100 L340 120 L340 300 L320 300 L310 120 L310 480 Q310 490 300 490 L100 490 Q90 490 90 480 L90 120 L80 300 L60 300 L60 120 L40 100 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M150 40 Q200 60 250 40' fill='none' stroke='" + s.dark + "' stroke-width='3' opacity='0.5'/>" +
-        "<path d='M105 130 L90 290 M295 130 L310 290' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.3'/>" +
+        groundShadow('longsleeve', 200, 340, 112, 15) +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
+        "<path d='M172,42 Q200,62 228,42' fill='none' stroke='" + s.stroke + "' stroke-width='3' stroke-linecap='round' opacity='0.7'/>" +
+        "<path d='M148,54 L138,148 M252,54 L262,148' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
+        "<path d='M146,190 Q200,200 254,190' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.22'/>" +
+        "<path d='M76,236 L98,240' stroke='" + s.stroke + "' stroke-width='1.5' opacity='0.5'/><path d='M324,236 L302,240' stroke='" + s.stroke + "' stroke-width='1.5' opacity='0.5'/>" +
         "</svg>";
     },
 
     polo: function (c) {
       var s = svgOpen('polo', c);
+      var d = "M172,48 L182,62 L164,86 L188,100 L182,60 L252,54 L302,66 Q320,72 322,90 L324,104 Q324,118 306,122 L288,124 Q266,116 250,98 L256,180 L252,260 L246,300 Q200,310 154,300 L148,260 L144,180 L150,98 Q134,116 112,124 L94,122 Q76,118 76,104 L78,90 Q80,72 98,66 L148,54 L218,60 L212,100 L236,86 L218,62 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('polo', 200, 470, 130, 16) +
-        "<path d='M100 50 L120 30 L140 30 Q150 30 150 40 L150 100 L180 100 L180 160 L220 160 L220 100 L250 100 L250 40 Q250 30 260 30 L280 30 L300 50 L320 80 L330 90 L330 120 L310 120 L310 480 Q310 490 300 490 L100 490 Q90 490 90 480 L90 120 L70 120 L70 90 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M180 100 L180 160 L220 160 L220 100' fill='none' stroke='" + s.dark + "' stroke-width='2' opacity='0.55'/>" +
-        "<circle cx='200' cy='125' r='3' fill='" + s.dark + "' opacity='0.5'/><circle cx='200' cy='148' r='3' fill='" + s.dark + "' opacity='0.5'/>" +
+        groundShadow('polo', 200, 340, 108, 15) +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
+        "<path d='M182,60 L172,48 L164,86 L188,100 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='2' stroke-linejoin='round'/>" +
+        "<path d='M218,60 L228,48 L236,86 L212,100 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='2' stroke-linejoin='round'/>" +
+        "<rect x='194' y='100' width='12' height='66' rx='2' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.6'/>" +
+        "<circle cx='200' cy='118' r='2.6' fill='" + s.dark + "' opacity='0.6'/><circle cx='200' cy='140' r='2.6' fill='" + s.dark + "' opacity='0.6'/><circle cx='200' cy='162' r='2.6' fill='" + s.dark + "' opacity='0.6'/>" +
+        "<path d='M148,54 L150,98 M252,54 L250,98' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
+        "<path d='M146,190 Q200,200 254,190' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.2'/>" +
         "</svg>";
     },
 
@@ -215,6 +242,7 @@
         "<path d='M300 185 Q355 185 355 232 Q355 279 300 279' fill='none' stroke='" + s.stroke + "' stroke-width='14' stroke-linecap='round'/>" +
         "<path d='M300 185 Q355 185 355 232 Q355 279 300 279' fill='none' stroke='" + s.fill + "' stroke-width='9' stroke-linecap='round'/>" +
         "<rect x='100' y='125' width='200' height='250' rx='8' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<rect x='100' y='125' width='200' height='250' rx='8' fill='" + s.sheen + "'/>" +
         "<ellipse cx='200' cy='125' rx='100' ry='14' fill='" + s.dark + "' opacity='0.6'/>" +
         "<ellipse cx='200' cy='123' rx='94' ry='11' fill='" + s.fill + "'/>" +
         "<rect x='118' y='145' width='16' height='210' rx='8' fill='#ffffff' opacity='0.28'/>" +
@@ -223,9 +251,11 @@
 
     travelmug: function (c) {
       var s = svgOpen('travelmug', c);
+      var d = "M140 100 L130 400 Q130 420 150 420 L250 420 Q270 420 270 400 L260 100 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
         groundShadow('travelmug', 200, 425, 75, 12) +
-        "<path d='M140 100 L130 400 Q130 420 150 420 L250 420 Q270 420 270 400 L260 100 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
         "<ellipse cx='200' cy='100' rx='60' ry='16' fill='" + s.dark + "' opacity='0.55'/>" +
         "<rect x='170' y='68' width='60' height='18' rx='6' fill='" + s.stroke + "'/>" +
         "<rect x='177' y='72' width='46' height='6' rx='3' fill='#ffffff' opacity='0.25'/>" +
@@ -235,20 +265,24 @@
 
     bottle: function (c) {
       var s = svgOpen('bottle', c);
+      var d = "M160 90 L150 420 Q150 450 180 450 L220 450 Q250 450 250 420 L240 90 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
         groundShadow('bottle', 200, 445, 65, 12) +
         "<rect x='172' y='48' width='56' height='42' rx='4' fill='" + s.stroke + "'/>" +
         "<rect x='178' y='52' width='44' height='8' rx='3' fill='#ffffff' opacity='0.3'/>" +
-        "<path d='M160 90 L150 420 Q150 450 180 450 L220 450 Q250 450 250 420 L240 90 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
         "<rect x='166' y='150' width='14' height='250' rx='7' fill='#ffffff' opacity='0.28'/>" +
         "</svg>";
     },
 
     tumbler: function (c) {
       var s = svgOpen('tumbler', c);
+      var d = "M150 90 L140 400 Q140 430 175 430 L225 430 Q260 430 260 400 L250 90 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
         groundShadow('tumbler', 200, 445, 68, 12) +
-        "<path d='M150 90 L140 400 Q140 430 175 430 L225 430 Q260 430 260 400 L250 90 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
         "<ellipse cx='200' cy='90' rx='50' ry='14' fill='" + s.dark + "' opacity='0.5'/>" +
         "<rect x='157' y='140' width='13' height='250' rx='6' fill='#ffffff' opacity='0.28'/>" +
         "</svg>";
@@ -257,116 +291,173 @@
     totebag: function (c) {
       var s = svgOpen('totebag', c);
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('totebag', 200, 460, 115, 14) +
-        "<path d='M140 150 Q140 75 200 75 Q260 75 260 150' fill='none' stroke='" + s.stroke + "' stroke-width='9' stroke-linecap='round'/>" +
-        "<rect x='100' y='150' width='200' height='300' rx='6' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='M100 195 L300 195' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.35'/>" +
-        "<path d='M120 150 L110 450 M280 150 L290 450' stroke='" + s.dark + "' stroke-width='1' opacity='0.25'/>" +
+        groundShadow('totebag', 200, 446, 118, 14) +
+        "<path d='M148,150 Q144,84 172,72' fill='none' stroke='" + s.stroke + "' stroke-width='9' stroke-linecap='round'/>" +
+        "<path d='M148,150 Q144,84 172,72' fill='none' stroke='" + s.fill + "' stroke-width='5' stroke-linecap='round'/>" +
+        "<path d='M252,150 Q256,84 228,72' fill='none' stroke='" + s.stroke + "' stroke-width='9' stroke-linecap='round'/>" +
+        "<path d='M252,150 Q256,84 228,72' fill='none' stroke='" + s.fill + "' stroke-width='5' stroke-linecap='round'/>" +
+        "<path d='M104,150 L296,150 L286,430 Q284,444 270,444 L130,444 Q116,444 114,430 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='M104,150 L296,150 L286,430 Q284,444 270,444 L130,444 Q116,444 114,430 Z' fill='" + s.sheen + "'/>" +
+        "<path d='M104,150 L296,150' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.5'/>" +
+        "<path d='M104,150 L96,430 M296,150 L304,430' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.3'/>" +
+        "<path d='M118,196 L282,196' stroke='" + s.dark + "' stroke-width='1' opacity='0.22' stroke-dasharray='4,4'/>" +
+        "<path d='M118,430 Q200,442 282,430' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.2'/>" +
         "</svg>";
     },
 
     backpack: function (c) {
       var s = svgOpen('backpack', c);
+      var body = "M116,140 Q112,120 132,112 L268,112 Q288,120 284,140 L288,400 Q288,428 260,430 L140,430 Q112,428 112,400 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('backpack', 200, 435, 100, 14) +
-        "<path d='M160 100 Q160 48 200 48 Q240 48 240 100' fill='none' stroke='" + s.stroke + "' stroke-width='9' stroke-linecap='round'/>" +
-        "<rect x='120' y='100' width='160' height='320' rx='22' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='158' y='195' width='84' height='90' rx='8' fill='" + s.dark + "' opacity='0.28'/>" +
-        "<path d='M155 190 L245 190 M155 290 L245 290' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
-        "<path d='M132 415 L132 460 M268 415 L268 460' stroke='" + s.stroke + "' stroke-width='6' stroke-linecap='round'/>" +
+        groundShadow('backpack', 200, 446, 105, 14) +
+        "<path d='M150,96 Q140,180 148,300 Q150,340 168,360' fill='none' stroke='" + s.stroke + "' stroke-width='16' stroke-linecap='round' opacity='0.9'/>" +
+        "<path d='M150,96 Q140,180 148,300 Q150,340 168,360' fill='none' stroke='" + s.fill + "' stroke-width='11' stroke-linecap='round'/>" +
+        "<path d='M250,96 Q260,180 252,300 Q250,340 232,360' fill='none' stroke='" + s.stroke + "' stroke-width='16' stroke-linecap='round' opacity='0.9'/>" +
+        "<path d='M250,96 Q260,180 252,300 Q250,340 232,360' fill='none' stroke='" + s.fill + "' stroke-width='11' stroke-linecap='round'/>" +
+        "<path d='M172,92 Q172,66 200,66 Q228,66 228,92' fill='none' stroke='" + s.stroke + "' stroke-width='8' stroke-linecap='round'/>" +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
+        "<path d='M138,220 Q200,206 262,220 L266,340 Q200,356 134,340 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='2'/>" +
+        "<path d='M138,220 Q200,206 262,220' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
+        "<path d='M140,222 Q200,209 260,222' fill='none' stroke='" + s.dark + "' stroke-width='1.5' stroke-dasharray='3,3' opacity='0.5'/>" +
+        "<circle cx='255' cy='221' r='4' fill='" + s.stroke + "'/>" +
+        "<rect x='120' y='270' width='14' height='24' rx='3' fill='" + s.dark + "' opacity='0.6'/>" +
+        "<rect x='266' y='270' width='14' height='24' rx='3' fill='" + s.dark + "' opacity='0.6'/>" +
         "</svg>";
     },
 
     cap: function (c) {
       var s = svgOpen('cap', c);
+      var crown = "M96,214 Q94,108 200,100 Q306,108 304,214 Q304,224 294,227 L106,227 Q96,224 96,214 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('cap', 200, 255, 130, 16) +
-        "<path d='M92 224 Q90 260 130 268 Q220 280 310 240 Q315 236 308 228 Q300 224 290 226 Q200 240 100 222 Z' fill='" + s.dark + "' opacity='0.85'/>" +
-        "<path d='M100 220 Q100 115 200 115 Q300 115 300 220 Q300 232 288 234 Q200 250 112 234 Q100 232 100 220 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='M200 118 L200 220 M150 122 L158 222 M250 122 L242 222' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.35'/>" +
-        "<circle cx='200' cy='120' r='7' fill='" + s.dark + "' opacity='0.7'/>" +
+        groundShadow('cap', 200, 270, 128, 15) +
+        "<path d='M108,216 Q104,246 128,258 Q200,272 292,246 Q308,240 306,228 Q302,220 292,222 Q200,242 118,220 Q110,216 108,216 Z' fill='" + s.dark + "' stroke='" + s.stroke + "' stroke-width='2'/>" +
+        "<path d='M118,224 Q200,244 296,226' fill='none' stroke='" + s.dark2 + "' stroke-width='1' opacity='0.5'/>" +
+        "<path d='" + crown + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + crown + "' fill='" + s.sheen + "'/>" +
+        "<path d='M200,103 L200,225 M148,108 Q142,166 150,224 M252,108 Q258,166 250,224' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.35' fill='none'/>" +
+        "<circle cx='200' cy='105' r='6' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='1.5'/>" +
         "</svg>";
     },
 
     beanie: function (c) {
       var s = svgOpen('beanie', c);
+      var body = "M122,260 Q118,150 200,138 Q282,150 278,260 L278,296 Q278,304 270,304 L130,304 Q122,304 122,296 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('beanie', 200, 300, 95, 14) +
-        "<path d='M120 250 Q120 145 200 145 Q280 145 280 250 L280 300 Q280 322 258 322 L142 322 Q120 322 120 300 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='120' y='282' width='160' height='40' fill='" + s.dark + "' opacity='0.3'/>" +
-        "<path d='M120 282 L280 282' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
-        "<circle cx='200' cy='135' r='11' fill='" + s.dark + "' opacity='0.6'/>" +
+        groundShadow('beanie', 200, 330, 100, 14) +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='M148,152 Q140,220 144,262 M252,152 Q260,220 256,262 M200,140 L200,264' stroke='" + s.dark + "' stroke-width='1.1' opacity='0.3' fill='none'/>" +
+        "<rect x='122' y='262' width='156' height='42' rx='4' fill='" + s.dark + "' opacity='0.22' stroke='" + s.stroke + "' stroke-width='2'/>" +
+        "<path d='M124,272 L276,272 M124,282 L276,282 M124,292 L276,292' stroke='" + s.dark + "' stroke-width='1' opacity='0.35'/>" +
+        "<circle cx='200' cy='132' r='12' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
+        "<path d='M200,124 L200,140 M192,132 L208,132' stroke='" + s.dark + "' stroke-width='1' opacity='0.4'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
         "</svg>";
     },
 
     phonecase: function (c) {
       var s = svgOpen('phonecase', c);
+      var body = "M144,90 Q140,78 152,74 L248,74 Q260,78 256,90 L262,300 Q262,326 236,328 L164,328 Q138,326 138,300 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('phonecase', 200, 335, 75, 12) +
-        "<rect x='140' y='80' width='120' height='240' rx='18' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='152' y='92' width='96' height='170' rx='6' fill='#1e293b' opacity='0.15'/>" +
-        "<circle cx='200' cy='295' r='11' fill='" + s.dark + "' opacity='0.4'/>" +
-        "<rect x='185' y='88' width='30' height='5' rx='2.5' fill='" + s.dark + "' opacity='0.4'/>" +
+        groundShadow('phonecase', 200, 352, 78, 12) +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
+        "<rect x='160' y='86' width='58' height='58' rx='14' fill='" + s.dark + "' opacity='0.35' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
+        "<circle cx='178' cy='104' r='12' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.5'/><circle cx='178' cy='104' r='5' fill='" + s.dark2 + "' opacity='0.6'/>" +
+        "<circle cx='202' cy='104' r='12' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.5'/><circle cx='202' cy='104' r='5' fill='" + s.dark2 + "' opacity='0.6'/>" +
+        "<circle cx='178' cy='128' r='9' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.5'/><circle cx='178' cy='128' r='4' fill='" + s.dark2 + "' opacity='0.6'/>" +
+        "<rect x='134' y='150' width='6' height='26' rx='3' fill='" + s.stroke + "' opacity='0.7'/>" +
+        "<rect x='260' y='140' width='6' height='20' rx='3' fill='" + s.stroke + "' opacity='0.7'/>" +
+        "<rect x='260' y='170' width='6' height='36' rx='3' fill='" + s.stroke + "' opacity='0.7'/>" +
+        "<rect x='185' y='312' width='30' height='5' rx='2.5' fill='" + s.dark + "' opacity='0.4'/>" +
         "</svg>";
     },
 
     laptopsleeve: function (c) {
       var s = svgOpen('laptopsleeve', c);
+      var body = "M80,150 L320,150 Q328,150 328,158 L328,322 Q328,330 320,330 L80,330 Q72,330 72,322 L72,158 Q72,150 80,150 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
         groundShadow('laptopsleeve', 200, 350, 130, 14) +
-        "<rect x='80' y='150' width='240' height='180' rx='10' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
         "<rect x='95' y='163' width='210' height='154' rx='5' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
-        "<path d='M300 235 L320 240 L300 245 Z' fill='" + s.stroke + "'/>" +
+        "<path d='M300,232 L322,240 L300,248 Z' fill='" + s.stroke + "'/>" +
+        "<path d='M300,232 L322,240 L300,248' fill='none' stroke='" + s.dark2 + "' stroke-width='1' opacity='0.3'/>" +
         "</svg>";
     },
 
     mousepad: function (c) {
       var s = svgOpen('mousepad', c);
+      var body = "M90,180 Q90,164 106,164 L294,164 Q310,164 310,180 L310,320 Q310,336 294,336 L106,336 Q90,336 90,320 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('mousepad', 200, 340, 130, 12) +
-        "<rect x='90' y='180' width='220' height='160' rx='20' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='90' y='180' width='220' height='16' rx='8' fill='#ffffff' opacity='0.2'/>" +
+        groundShadow('mousepad', 200, 344, 130, 12) +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
+        "<rect x='90' y='320' width='220' height='16' rx='4' fill='" + s.dark + "' opacity='0.18'/>" +
         "</svg>";
     },
 
     powerbank: function (c) {
       var s = svgOpen('powerbank', c);
+      var body = "M140,178 Q140,170 148,170 L252,170 Q260,170 260,178 L260,362 Q260,370 252,370 L148,370 Q140,370 140,362 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
         groundShadow('powerbank', 200, 390, 90, 12) +
-        "<rect x='140' y='170' width='120' height='200' rx='18' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='150' y='182' width='12' height='176' rx='6' fill='#ffffff' opacity='0.28'/>" +
-        "<circle cx='200' cy='195' r='4' fill='" + s.dark + "' opacity='0.6'/>" +
-        "<rect x='185' y='340' width='30' height='8' rx='4' fill='" + s.dark + "' opacity='0.5'/>" +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
+        "<circle cx='200' cy='196' r='4.5' fill='" + s.dark + "' opacity='0.6'/>" +
+        "<circle cx='182' cy='330' r='4' fill='none' stroke='" + s.dark + "' stroke-width='1.4' opacity='0.55'/>" +
+        "<circle cx='195' cy='330' r='4' fill='none' stroke='" + s.dark + "' stroke-width='1.4' opacity='0.4'/>" +
+        "<circle cx='208' cy='330' r='4' fill='none' stroke='" + s.dark + "' stroke-width='1.4' opacity='0.25'/>" +
+        "<rect x='185' y='348' width='30' height='8' rx='4' fill='" + s.dark + "' opacity='0.45'/>" +
         "</svg>";
     },
 
     notebook: function (c) {
       var s = svgOpen('notebook', c);
+      var cover = "M126,100 L290,100 Q290,100 290,100 L290,384 L126,384 Z";
+      var coil = ["M116,110 Q128,110 128,120 Q128,130 116,130", "M116,136 Q128,136 128,146 Q128,156 116,156",
+        "M116,162 Q128,162 128,172 Q128,182 116,182", "M116,188 Q128,188 128,198 Q128,208 116,208",
+        "M116,214 Q128,214 128,224 Q128,234 116,234", "M116,240 Q128,240 128,250 Q128,260 116,260",
+        "M116,266 Q128,266 128,276 Q128,286 116,286", "M116,292 Q128,292 128,302 Q128,312 116,312",
+        "M116,318 Q128,318 128,328 Q128,338 116,338", "M116,344 Q128,344 128,354 Q128,364 116,364",
+        "M116,370 Q128,370 128,378 Q128,384 116,384"].join(" ");
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('notebook', 200, 395, 110, 14) +
-        "<rect x='108' y='100' width='184' height='284' rx='4' fill='" + s.dark + "' opacity='0.5'/>" +
-        "<rect x='114' y='100' width='178' height='280' rx='4' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='114' y='100' width='178' height='16' fill='#ffffff' opacity='0.18'/>" +
+        groundShadow('notebook', 200, 398, 112, 14) +
+        "<rect x='130' y='106' width='168' height='276' rx='3' fill='#efece4'/>" +
+        "<rect x='128' y='104' width='168' height='276' rx='3' fill='#f4f1ea'/>" +
+        "<rect x='126' y='100' width='164' height='284' rx='4' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<rect x='126' y='100' width='164' height='284' rx='4' fill='" + s.sheen + "'/>" +
+        "<g fill='none' stroke='" + s.dark2 + "' stroke-width='3' stroke-linecap='round' opacity='0.75'>" +
+        "<path d='" + coil + "'/></g>" +
+        "<rect x='266' y='100' width='10' height='284' fill='" + s.dark + "' opacity='0.4'/>" +
         "</svg>";
     },
 
     sticker: function (c) {
       var s = svgOpen('sticker', c);
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('sticker', 200, 355, 105, 12) +
-        "<circle cx='200' cy='250' r='103' fill='none' stroke='" + s.stroke + "' stroke-width='2' stroke-dasharray='6,5' opacity='0.6'/>" +
-        "<circle cx='200' cy='250' r='95' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<ellipse cx='170' cy='215' rx='30' ry='16' fill='#ffffff' opacity='0.2'/>" +
+        groundShadow('sticker', 200, 358, 105, 12) +
+        "<circle cx='200' cy='250' r='106' fill='#f7f5ef' stroke='#e2ded0' stroke-width='1'/>" +
+        "<circle cx='200' cy='250' r='103' fill='none' stroke='#c9c4b4' stroke-width='1.5' stroke-dasharray='5,4'/>" +
+        "<circle cx='198' cy='248' r='95' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
+        "<circle cx='198' cy='248' r='95' fill='" + s.sheen + "'/>" +
+        "<ellipse cx='168' cy='213' rx='30' ry='16' fill='#ffffff' opacity='0.22'/>" +
+        "<path d='M280,175 Q300,190 296,215 Q286,206 270,206 Q276,190 280,175 Z' fill='#f7f5ef' stroke='#c9c4b4' stroke-width='1.2'/>" +
+        "<path d='M270,206 Q286,206 296,215' fill='none' stroke='#c9c4b4' stroke-width='1' opacity='0.5'/>" +
         "</svg>";
     },
 
     poster: function (c) {
       var s = svgOpen('poster', c);
+      var body = "M100,52 L300,50 L302,432 Q280,448 200,450 Q120,448 98,432 Z";
       return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('poster', 200, 460, 115, 14) +
-        "<rect x='100' y='50' width='200' height='400' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='M280 430 L300 450 L300 430 Z' fill='" + s.dark + "' opacity='0.5'/>" +
-        "<rect x='100' y='50' width='200' height='14' fill='#ffffff' opacity='0.15'/>" +
+        groundShadow('poster', 200, 464, 112, 13) +
+        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
+        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
+        "<path d='M100,52 L300,50' fill='none' stroke='#ffffff' stroke-width='2' opacity='0.3'/>" +
+        "<path d='M98,432 Q120,448 200,450 Q280,448 302,432' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
+        "<circle cx='112' cy='58' r='6' fill='" + s.dark2 + "'/><circle cx='112' cy='58' r='2.4' fill='#ffffff' opacity='0.6'/>" +
+        "<circle cx='288' cy='58' r='6' fill='" + s.dark2 + "'/><circle cx='288' cy='58' r='2.4' fill='#ffffff' opacity='0.6'/>" +
         "</svg>";
     }
   };
