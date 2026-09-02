@@ -8,6 +8,9 @@
 <link rel="icon" href="assets/images/favicon-32.png" sizes="32x32" type="image/png" />
 <link rel="icon" href="assets/images/favicon.png" type="image/png" />
 <link rel="apple-touch-icon" href="assets/images/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css" />
 <link rel="canonical" href="https://creativebrandingsolutions.ng/" />
@@ -169,7 +172,23 @@
     </a>
     <div class="navlinks">
       <a href="index.html" class="active">Home</a>
-      <a href="services.html">Services</a>
+      <div class="nav-item has-mega">
+      <a href="services.html" class="nav-mega-trigger">Services</a>
+      <button class="nav-mega-toggle" type="button" aria-label="Toggle services menu" aria-expanded="false"><i class="fa-solid fa-chevron-down"></i></button>
+      <div class="nav-mega">
+        <div class="nav-mega-panel">
+        <div class="nav-mega-grid">
+          <a href="services.html#print" class="nav-mega-item"><i class="fa-solid fa-file-lines"></i><span>Commercial &amp; Marketing Print</span></a>
+          <a href="services.html#packaging" class="nav-mega-item"><i class="fa-solid fa-box"></i><span>Packaging &amp; Labels</span></a>
+          <a href="services.html#outdoor" class="nav-mega-item"><i class="fa-solid fa-signs-post"></i><span>Outdoor Advertising</span></a>
+          <a href="services.html#vehicle" class="nav-mega-item"><i class="fa-solid fa-truck"></i><span>Vehicle &amp; Environmental</span></a>
+          <a href="services.html#gifts" class="nav-mega-item"><i class="fa-solid fa-gift"></i><span>Gifts &amp; Promotional</span></a>
+          <a href="services.html#office" class="nav-mega-item"><i class="fa-solid fa-building"></i><span>Office &amp; Workspace</span></a>
+        </div>
+        <a href="services.html" class="nav-mega-viewall">View All Six Capabilities <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
       <a href="portfolio.html">Portfolio</a>
       <a href="mockup-studio.html">Mockup Studio</a>
       <a href="blog.html">Blog</a>
@@ -186,27 +205,37 @@
 </div>
 
 <!-- HERO -->
-<header class="hero-slider" id="heroSlider">
-
-  <div class="hero-slide is-active" style="background-image:url('assets/images/hero-landing-page.webp');">
-    <div class="container">
-      <div class="hero-content">
-        <h1>The Strategic Partner Behind <em>Nigeria's Most Visible</em> Brands</h1>
-        <p class="lead">Creative Branding Solutions runs POSM, outdoor advertising, experiential activation and corporate gifting as one integrated campaign, backed by in-house manufacturing — not as separate jobs from separate vendors.</p>
-        <div class="hero-btns">
-          <a href="contact.html" class="btn btn-primary">Talk To A Strategist <i class="fa-solid fa-arrow-right"></i></a>
-          <a href="services.html" class="btn btn-ghost-light">Explore Capabilities</a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat"><b>10+</b><span>Years In Brand Execution</span></div>
-          <div class="stat"><b>500+</b><span>Campaigns Delivered</span></div>
-          <div class="stat"><b>3</b><span>Cities: Lagos, Abuja, PH</span></div>
-          <div class="stat"><b>1</b><span>Group, 3 Divisions Deep</span></div>
+<header class="hero-split">
+  <div class="container hero-split-inner">
+    <div class="hero-content">
+      <h1>The Strategic Partner Behind <em>Nigeria's Most Visible</em> Brands</h1>
+      <p class="lead">Creative Branding Solutions runs POSM, outdoor advertising, experiential activation and corporate gifting as one integrated campaign, backed by in-house manufacturing — not as separate jobs from separate vendors.</p>
+      <div class="hero-btns">
+        <a href="contact.html" class="btn btn-primary">Talk To A Strategist <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="services.html" class="btn btn-ghost-light">Explore Capabilities</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>10+</b><span>Years In Brand Execution</span></div>
+        <div class="stat"><b>500+</b><span>Campaigns Delivered</span></div>
+        <div class="stat"><b>3</b><span>Cities: Lagos, Abuja, PH</span></div>
+        <div class="stat"><b>1</b><span>Group, 3 Divisions Deep</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-visual-frame">
+        <img src="assets/images/hero-landing-page.webp" alt="Branded merchandise and print collateral produced by Creative Branding Solutions" class="hero-visual-main" />
+      </div>
+      <img src="assets/images/drinkware-mugs-bottles.webp" alt="Branded mugs and bottles mockup" class="hero-visual-float hero-visual-float-a" />
+      <div class="hero-promo-card">
+        <span class="hero-promo-icon"><i class="fa-solid fa-gift"></i></span>
+        <div>
+          <h4>Gift &amp; Promotional Branding</h4>
+          <p>Custom branding on tech gadgets, drinkware, apparel and executive gift sets for events and corporate occasions.</p>
+          <a href="services.html#gifts">Learn More <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
   </div>
-
 </header>
 
 <!-- TRUSTED BY -->
@@ -265,7 +294,7 @@
 <section class="bg-navy halftone" style="position:relative;">
   <div class="wave-divider wave-top">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,70 C200,10 400,10 600,40 C800,70 1000,20 1200,10 L1200,70 L0,70 Z" fill="var(--navy-deep)"></path>
+      <path d="M0,70 L1200,6 L1200,70 Z" fill="var(--navy-deep)"></path>
     </svg>
   </div>
   <div class="container">
@@ -318,7 +347,7 @@
   </div>
   <div class="wave-divider wave-bottom">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,70 C200,10 400,10 600,40 C800,70 1000,20 1200,10 L1200,70 L0,70 Z" fill="var(--navy-deep)"></path>
+      <path d="M0,70 L1200,6 L1200,70 Z" fill="var(--navy-deep)"></path>
     </svg>
   </div>
 </section>
@@ -454,7 +483,7 @@
 <section class="bg-amber-solid" style="position:relative;">
   <div class="wave-divider wave-top">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,30 C200,70 400,70 600,50 C800,30 1000,60 1200,40 L1200,70 L0,70 Z" fill="var(--amber)"></path>
+      <path d="M0,6 L1200,70 L0,70 Z" fill="var(--amber)"></path>
     </svg>
   </div>
   <div class="container">
@@ -488,7 +517,7 @@
   </div>
   <div class="wave-divider wave-bottom">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,70 C200,10 400,10 600,40 C800,70 1000,20 1200,10 L1200,70 L0,70 Z" fill="var(--amber)"></path>
+      <path d="M0,70 L1200,6 L1200,70 Z" fill="var(--amber)"></path>
     </svg>
   </div>
 </section>
@@ -524,7 +553,7 @@
   </div>
   <div class="wave-divider wave-bottom">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,70 C200,10 400,10 600,40 C800,70 1000,20 1200,10 L1200,70 L0,70 Z" fill="var(--violet)"></path>
+      <path d="M0,70 L1200,6 L1200,70 Z" fill="var(--violet)"></path>
     </svg>
   </div>
 </section>
@@ -586,7 +615,7 @@
 <section class="bg-teal-solid" style="position:relative;">
   <div class="wave-divider wave-top">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,30 C200,70 400,70 600,50 C800,30 1000,60 1200,40 L1200,70 L0,70 Z" fill="var(--teal)"></path>
+      <path d="M0,6 L1200,70 L0,70 Z" fill="var(--teal)"></path>
     </svg>
   </div>
   <div class="container">
@@ -616,7 +645,7 @@
 <section class="bg-navy halftone" style="position:relative;">
   <div class="wave-divider wave-top">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,30 C200,70 400,70 600,50 C800,30 1000,60 1200,40 L1200,70 L0,70 Z" fill="var(--navy-deep)"></path>
+      <path d="M0,6 L1200,70 L0,70 Z" fill="var(--navy-deep)"></path>
     </svg>
   </div>
   <div class="container">
@@ -673,7 +702,7 @@
   </div>
   <div class="wave-divider wave-bottom">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,70 C200,10 400,10 600,40 C800,70 1000,20 1200,10 L1200,70 L0,70 Z" fill="var(--navy-deep)"></path>
+      <path d="M0,70 L1200,6 L1200,70 Z" fill="var(--navy-deep)"></path>
     </svg>
   </div>
 </section>

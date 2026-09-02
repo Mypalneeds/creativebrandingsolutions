@@ -1,522 +1,165 @@
 /* ============================================================
    Creative Branding Solutions — Mockup Studio
-   Self-contained product mockup builder: pick a product, upload
-   a logo, drag/resize/recolor, download a PNG, send an enquiry.
+   Vector product library — clean flat-vector illustrations (not photos)
+   for every library product, front AND back where the product has a
+   meaningful back view, rotate-only where it doesn't. Because it's
+   vector, the whole product can be dragged anywhere on the canvas,
+   spun to any angle with the rotate handle, recoloured with a true
+   fill (solid or gradient — no photo-multiply trick needed) and the
+   uploaded logo rides along on top, rotating with the product.
+   Uploading your own mockup photo still works exactly as before — a
+   fixed base image with a multiply-blend recolor layer — since an
+   arbitrary photo can't be vectorised or safely rotated as a shape.
    ============================================================ */
 
 (function () {
   var canvasEl = document.getElementById('studioCanvas');
   if (!canvasEl) return; // only run this script on the Studio page
 
-  /* ---------- Product catalogue ---------- */
+  var PRODUCT_BOX = 240; // matches .product-mount { width/height } in CSS
+
+  /* ---------- Product art library ----------
+     Every shape meant to take the chosen colour carries class="jc-fill";
+     everything else (seams, straps, shading) is a fixed detail baked
+     into the art so it reads the same regardless of colour. All art
+     lives in a 300x300 local box; logoAnchor values are offsets (in
+     that same 240px on-screen box) from the product's own centre. */
   var products = [
-    { id: 'tshirt',      name: 'T-Shirt',       cat: 'apparel' },
-    { id: 'hoodie',       name: 'Hoodie',        cat: 'apparel' },
-    { id: 'tanktop',      name: 'Tank Top',      cat: 'apparel' },
-    { id: 'longsleeve',   name: 'Long Sleeve',   cat: 'apparel' },
-    { id: 'polo',         name: 'Polo Shirt',    cat: 'apparel' },
-    { id: 'mug',          name: 'Coffee Mug',    cat: 'drinkware' },
-    { id: 'travelmug',    name: 'Travel Mug',    cat: 'drinkware' },
-    { id: 'bottle',       name: 'Water Bottle',  cat: 'drinkware' },
-    { id: 'tumbler',      name: 'Tumbler',       cat: 'drinkware' },
-    { id: 'totebag',      name: 'Tote Bag',      cat: 'bags' },
-    { id: 'backpack',     name: 'Backpack',      cat: 'bags' },
-    { id: 'cap',          name: 'Cap',           cat: 'bags' },
-    { id: 'beanie',       name: 'Beanie',        cat: 'bags' },
-    { id: 'phonecase',    name: 'Phone Case',    cat: 'tech' },
-    { id: 'laptopsleeve', name: 'Laptop Sleeve', cat: 'tech' },
-    { id: 'mousepad',     name: 'Mouse Pad',     cat: 'tech' },
-    { id: 'powerbank',    name: 'Power Bank',    cat: 'tech' },
-    { id: 'notebook',     name: 'Notebook',      cat: 'print' },
-    { id: 'sticker',      name: 'Sticker',       cat: 'print' },
-    { id: 'poster',       name: 'Poster',        cat: 'print' }
+    { id: 'tshirt', name: 'T-Shirt', cat: 'apparel', defaultColor: '#ffffff', hasBack: true, logoScale: 1,
+      logoAnchor: { front: { x: 0, y: -32 }, back: { x: 0, y: -38 } },
+      front: '<path class="jc-fill" d="M105,58 Q150,80 195,58 L232,92 L206,120 L206,254 Q150,268 94,254 L94,120 L68,92 Z"/>' +
+             '<path d="M105,58 Q150,80 195,58" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="3"/>' +
+             '<path d="M94,120 L68,92 M206,120 L232,92" fill="none" stroke="#1b2a3d" stroke-opacity="0.25" stroke-width="2"/>' +
+             '<path d="M94,254 Q150,268 206,254" fill="none" stroke="#1b2a3d" stroke-opacity="0.18" stroke-width="2"/>' +
+             '<path d="M105,58 Q150,80 195,58 L188,68 Q150,86 112,68 Z" fill="#000" fill-opacity="0.12"/>',
+      back:  '<path class="jc-fill" d="M100,60 L150,72 L200,60 L232,92 L206,120 L206,254 Q150,268 94,254 L94,120 L68,92 Z"/>' +
+             '<path d="M100,60 L150,72 L200,60" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="3"/>' +
+             '<path d="M150,74 L150,250" fill="none" stroke="#1b2a3d" stroke-opacity="0.14" stroke-width="1.5" stroke-dasharray="2 5"/>' +
+             '<path d="M94,120 L68,92 M206,120 L232,92" fill="none" stroke="#1b2a3d" stroke-opacity="0.25" stroke-width="2"/>' },
+
+    { id: 'hoodie', name: 'Hoodie', cat: 'apparel', defaultColor: '#ffffff', hasBack: true, logoScale: 1,
+      logoAnchor: { front: { x: 0, y: -18 }, back: { x: 0, y: -30 } },
+      front: '<path d="M110,52 Q150,30 190,52 Q205,60 195,78 Q150,64 105,78 Q95,60 110,52 Z" fill="#000" fill-opacity="0.10"/>' +
+             '<path class="jc-fill" d="M100,70 Q150,90 200,70 L238,105 L210,135 L210,258 Q150,272 90,258 L90,135 L62,105 Z"/>' +
+             '<path d="M108,72 Q150,92 192,72" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="3"/>' +
+             '<path d="M118,195 L118,241 Q150,250 182,241 L182,195" fill="none" stroke="#1b2a3d" stroke-opacity="0.35" stroke-width="2"/>' +
+             '<path d="M138,90 L134,124 M162,90 L166,124" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="2.5" stroke-linecap="round"/>',
+      back:  '<path class="jc-fill" d="M105,50 Q150,26 195,50 Q212,62 200,90 Q150,72 100,90 Q88,62 105,50 Z"/>' +
+             '<path d="M105,50 Q150,26 195,50" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="3"/>' +
+             '<path class="jc-fill" d="M100,88 Q150,106 200,88 L238,105 L210,135 L210,258 Q150,272 90,258 L90,135 L62,105 Z"/>' +
+             '<path d="M150,108 L150,250" fill="none" stroke="#1b2a3d" stroke-opacity="0.14" stroke-width="1.5" stroke-dasharray="2 5"/>' },
+
+    { id: 'cap', name: 'Cap', cat: 'apparel', defaultColor: '#00355F', hasBack: true, logoScale: 0.5,
+      logoAnchor: { front: { x: 0, y: -20 }, back: { x: 0, y: -8 } },
+      front: '<path class="jc-fill" d="M85,155 Q88,70 150,62 Q212,70 215,155 Z"/>' +
+             '<path d="M150,62 L150,155" fill="none" stroke="#1b2a3d" stroke-opacity="0.2" stroke-width="1.5"/>' +
+             '<path d="M110,90 L120,150 M190,90 L180,150" fill="none" stroke="#1b2a3d" stroke-opacity="0.2" stroke-width="1.5"/>' +
+             '<circle cx="150" cy="66" r="6" fill="#1b2a3d" fill-opacity="0.3"/>' +
+             '<path class="jc-fill" d="M70,155 Q150,182 230,155 Q150,168 70,155 Z"/>' +
+             '<path d="M85,155 Q88,70 150,62 Q120,80 110,155 Z" fill="#fff" fill-opacity="0.12"/>',
+      back:  '<path class="jc-fill" d="M85,150 Q88,68 150,60 Q212,68 215,150 Q215,158 205,160 L195,148 Q205,150 205,140 Q198,90 150,82 Q102,90 95,140 Q95,150 105,148 L95,160 Q85,158 85,150 Z"/>' +
+             '<rect x="140" y="150" width="20" height="14" rx="3" fill="#1b2a3d" fill-opacity="0.35"/>' +
+             '<path d="M130,160 L110,172 M170,160 L190,172" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="4" stroke-linecap="round"/>' },
+
+    { id: 'totebag', name: 'Tote Bag', cat: 'bags', defaultColor: '#efe4d0', hasBack: true, logoScale: 0.85,
+      logoAnchor: { front: { x: 0, y: 10 }, back: { x: 0, y: 10 } },
+      front: '<path d="M112,95 Q112,50 150,50 Q188,50 188,95" fill="none" stroke="#1b2a3d" stroke-opacity="0.4" stroke-width="6" stroke-linecap="round"/>' +
+             '<rect class="jc-fill" x="75" y="95" width="150" height="165" rx="4"/>' +
+             '<path d="M75,95 L225,95 L225,113 L75,113 Z" fill="#000" fill-opacity="0.08"/>',
+      back:  '<path d="M112,95 Q112,50 150,50 Q188,50 188,95" fill="none" stroke="#1b2a3d" stroke-opacity="0.4" stroke-width="6" stroke-linecap="round"/>' +
+             '<rect class="jc-fill" x="75" y="95" width="150" height="165" rx="4"/>' +
+             '<rect x="130" y="180" width="40" height="24" rx="4" fill="none" stroke="#1b2a3d" stroke-opacity="0.25" stroke-width="1.5"/>' },
+
+    { id: 'backpack', name: 'Backpack', cat: 'bags', defaultColor: '#111111', hasBack: true, logoScale: 0.7,
+      logoAnchor: { front: { x: 0, y: -10 }, back: { x: 0, y: -30 } },
+      front: '<path d="M95,100 Q80,150 90,240" fill="none" stroke="#1b2a3d" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>' +
+             '<path d="M205,100 Q220,150 210,240" fill="none" stroke="#1b2a3d" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>' +
+             '<rect class="jc-fill" x="85" y="80" width="130" height="185" rx="18"/>' +
+             '<rect x="105" y="150" width="90" height="80" rx="12" fill="#000" fill-opacity="0.10"/>' +
+             '<rect x="130" y="60" width="40" height="22" rx="10" fill="none" stroke="#1b2a3d" stroke-opacity="0.35" stroke-width="5"/>' +
+             '<path d="M85,84 Q150,72 215,84" fill="#fff" fill-opacity="0.12"/>',
+      back:  '<rect class="jc-fill" x="85" y="80" width="130" height="185" rx="18"/>' +
+             '<path d="M110,80 Q100,170 112,260" fill="none" stroke="#1b2a3d" stroke-opacity="0.4" stroke-width="9" stroke-linecap="round"/>' +
+             '<path d="M190,80 Q200,170 188,260" fill="none" stroke="#1b2a3d" stroke-opacity="0.4" stroke-width="9" stroke-linecap="round"/>' +
+             '<rect x="130" y="60" width="40" height="22" rx="10" fill="none" stroke="#1b2a3d" stroke-opacity="0.35" stroke-width="5"/>' },
+
+    { id: 'mug', name: 'Coffee Mug', cat: 'drinkware', defaultColor: '#ffffff', hasBack: false, logoScale: 0.45,
+      logoAnchor: { front: { x: 0, y: 0 }, back: { x: 0, y: 0 } },
+      front: '<path class="jc-fill" d="M95,90 L205,90 L198,225 Q150,240 102,225 Z"/>' +
+             '<path d="M205,110 Q245,120 245,155 Q245,190 202,196" fill="none" stroke="#1b2a3d" stroke-opacity="0.4" stroke-width="10"/>' +
+             '<path d="M95,90 L205,90 L202,105 L98,105 Z" fill="#000" fill-opacity="0.12"/>' +
+             '<path d="M110,110 L104,215" fill="none" stroke="#fff" stroke-opacity="0.25" stroke-width="6" stroke-linecap="round"/>' },
+
+    { id: 'bottle', name: 'Water Bottle', cat: 'drinkware', defaultColor: '#0891b2', hasBack: false, logoScale: 0.4,
+      logoAnchor: { front: { x: 0, y: 0 }, back: { x: 0, y: 0 } },
+      front: '<rect x="128" y="45" width="44" height="26" rx="6" fill="#1b2a3d" fill-opacity="0.35"/>' +
+             '<path class="jc-fill" d="M120,71 L180,71 L188,110 L188,250 Q150,262 112,250 L112,110 Z"/>' +
+             '<path d="M120,71 L180,71 L184,90 L116,90 Z" fill="#000" fill-opacity="0.1"/>' +
+             '<path d="M124,105 L120,240" fill="none" stroke="#fff" stroke-opacity="0.22" stroke-width="7" stroke-linecap="round"/>' },
+
+    { id: 'phonecase', name: 'Phone Case', cat: 'tech', defaultColor: '#111111', hasBack: true, logoScale: 0.55,
+      logoAnchor: { front: { x: 0, y: 60 }, back: { x: 0, y: 60 } },
+      front: '<rect class="jc-fill" x="95" y="45" width="110" height="220" rx="24"/>' +
+             '<rect x="103" y="58" width="94" height="150" rx="14" fill="#0b1220" fill-opacity="0.75"/>',
+      back:  '<rect class="jc-fill" x="95" y="45" width="110" height="220" rx="24"/>' +
+             '<rect x="118" y="62" width="52" height="52" rx="14" fill="#000" fill-opacity="0.18"/>' +
+             '<circle cx="136" cy="80" r="10" fill="#1b2a3d" fill-opacity="0.4"/>' +
+             '<circle cx="160" cy="80" r="10" fill="#1b2a3d" fill-opacity="0.4"/>' +
+             '<circle cx="136" cy="102" r="7" fill="#1b2a3d" fill-opacity="0.3"/>' },
+
+    { id: 'notebook', name: 'Notebook', cat: 'print', defaultColor: '#00355F', hasBack: true, logoScale: 0.7,
+      logoAnchor: { front: { x: 6, y: 0 }, back: { x: 6, y: 0 } },
+      front: '<rect class="jc-fill" x="80" y="55" width="150" height="195" rx="4"/>' +
+             '<rect x="80" y="55" width="14" height="195" fill="#000" fill-opacity="0.18"/>' +
+             '<line x1="205" y1="55" x2="205" y2="250" stroke="#1b2a3d" stroke-opacity="0.25" stroke-width="4"/>',
+      back:  '<rect class="jc-fill" x="80" y="55" width="150" height="195" rx="4"/>' +
+             '<rect x="80" y="55" width="14" height="195" fill="#000" fill-opacity="0.18"/>' +
+             '<rect x="185" y="215" width="26" height="10" rx="5" fill="none" stroke="#1b2a3d" stroke-opacity="0.3" stroke-width="1.5"/>' },
+
+    { id: 'pen', name: 'Pen', cat: 'print', defaultColor: '#F84520', hasBack: false, logoScale: 0.28,
+      logoAnchor: { front: { x: 0, y: 15 }, back: { x: 0, y: 15 } },
+      front: '<g transform="rotate(35 150 150)">' +
+               '<rect class="jc-fill" x="135" y="60" width="30" height="160" rx="14"/>' +
+               '<path d="M135,205 L165,205 L150,240 Z" fill="#1b2a3d" fill-opacity="0.5"/>' +
+               '<rect x="135" y="80" width="30" height="18" fill="#000" fill-opacity="0.15"/>' +
+               '<rect x="146" y="45" width="8" height="25" rx="3" fill="#1b2a3d" fill-opacity="0.4"/>' +
+               '<line x1="142" y1="100" x2="142" y2="195" stroke="#fff" stroke-opacity="0.2" stroke-width="4"/>' +
+             '</g>' }
   ];
-
-  /* ---------- Color helpers ---------- */
-  function clamp(n) { return Math.max(0, Math.min(255, n)); }
-  function shade(hex, percent) {
-    // percent > 0 lightens toward white, percent < 0 darkens toward black
-    var f = parseInt(hex.slice(1), 16);
-    var t = percent < 0 ? 0 : 255;
-    var p = Math.abs(percent) / 100;
-    var R = (f >> 16) & 0xff, G = (f >> 8) & 0xff, B = f & 0xff;
-    var r = clamp(Math.round((t - R) * p) + R);
-    var g = clamp(Math.round((t - G) * p) + G);
-    var b = clamp(Math.round((t - B) * p) + B);
-    return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
-  }
-  // A believable "fabric/ceramic" line — visible on light colors, still reads on dark ones
-  function outline(hex) {
-    var f = parseInt(hex.slice(1), 16);
-    var brightness = (((f >> 16) & 0xff) * 299 + ((f >> 8) & 0xff) * 587 + (f & 0xff) * 114) / 1000;
-    return brightness > 200 ? shade(hex, -22) : shade(hex, 32);
-  }
-  // Blends two hex colors (weight 0 = all a, 1 = all b) — used to pick a
-  // sensible accent color (stitching, outlines) when a gradient is applied.
-  function mixHex(a, b, weight) {
-    var fa = parseInt(a.slice(1), 16), fb = parseInt(b.slice(1), 16);
-    var Ra = (fa >> 16) & 0xff, Ga = (fa >> 8) & 0xff, Ba = fa & 0xff;
-    var Rb = (fb >> 16) & 0xff, Gb = (fb >> 8) & 0xff, Bb = fb & 0xff;
-    var r = clamp(Math.round(Ra + (Rb - Ra) * weight));
-    var g = clamp(Math.round(Ga + (Gb - Ga) * weight));
-    var b2 = clamp(Math.round(Ba + (Bb - Ba) * weight));
-    return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b2).toString(16).slice(1);
-  }
-
-  /* ---------- Shared SVG building blocks ----------
-     Everything in this block is reused by all 20 product generators below,
-     so improving it here upgrades every product mockup automatically —
-     no need to touch the individual generator functions. */
-  function svgOpen(id, colorSpec) {
-    var isGradient = colorSpec && typeof colorSpec === 'object';
-    // `c` is the color every generator's accent details (stitching, seams,
-    // outlines) are derived from — for a gradient we blend the two picked
-    // colors so accents stay coherent with whatever the user chose.
-    var c = isGradient ? mixHex(colorSpec.from, colorSpec.to, 0.5) : colorSpec;
-    var light2 = shade(c, 50);   // brightest specular highlight
-    var light = shade(c, 24);    // soft upper highlight
-    var dark = shade(c, -20);    // core shadow
-    var dark2 = shade(c, -40);   // deepest falloff / occlusion
-    var stroke = outline(c);
-
-    var bodyGradientTag;
-    if (isGradient) {
-      var from = colorSpec.from, to = colorSpec.to;
-      var edgeLight = shade(from, 25);
-      var edgeDark = shade(to, -25);
-      var stops =
-        "<stop offset='0%' stop-color='" + edgeLight + "'/>" +
-        "<stop offset='28%' stop-color='" + from + "'/>" +
-        "<stop offset='72%' stop-color='" + to + "'/>" +
-        "<stop offset='100%' stop-color='" + edgeDark + "'/>";
-      if (colorSpec.direction === 'radial') {
-        bodyGradientTag = "<radialGradient id='g" + id + "' cx='42%' cy='32%' r='75%'>" + stops + "</radialGradient>";
-      } else {
-        var coords = { diagonal: "x1='15%' y1='0%' x2='85%' y2='100%'", vertical: "x1='50%' y1='0%' x2='50%' y2='100%'", horizontal: "x1='0%' y1='50%' x2='100%' y2='50%'" };
-        bodyGradientTag = "<linearGradient id='g" + id + "' " + (coords[colorSpec.direction] || coords.diagonal) + ">" + stops + "</linearGradient>";
-      }
-    } else {
-      // Richer multi-stop body gradient (was 3 stops, now 5) for a more
-      // dimensional, "studio photographed" material read.
-      bodyGradientTag =
-        "<linearGradient id='g" + id + "' x1='18%' y1='0%' x2='82%' y2='100%'>" +
-        "<stop offset='0%' stop-color='" + light2 + "'/>" +
-        "<stop offset='24%' stop-color='" + light + "'/>" +
-        "<stop offset='52%' stop-color='" + c + "'/>" +
-        "<stop offset='78%' stop-color='" + dark + "'/>" +
-        "<stop offset='100%' stop-color='" + dark2 + "'/>" +
-        "</linearGradient>";
-    }
-
-    var defs =
-      "<defs>" +
-      bodyGradientTag +
-      // Subtle top-down sheen usable as a glossy overlay highlight.
-      "<linearGradient id='sheen" + id + "' x1='0%' y1='0%' x2='0%' y2='100%'>" +
-      "<stop offset='0%' stop-color='#ffffff' stop-opacity='0.35'/>" +
-      "<stop offset='16%' stop-color='#ffffff' stop-opacity='0.06'/>" +
-      "<stop offset='100%' stop-color='#ffffff' stop-opacity='0'/>" +
-      "</linearGradient>" +
-      // Soft contact/ambient shadow gradient (used with a blur filter below).
-      "<radialGradient id='shadow" + id + "' cx='50%' cy='50%' r='50%'>" +
-      "<stop offset='0%' stop-color='#000000' stop-opacity='0.20'/>" +
-      "<stop offset='55%' stop-color='#000000' stop-opacity='0.09'/>" +
-      "<stop offset='100%' stop-color='#000000' stop-opacity='0'/>" +
-      "</radialGradient>" +
-      "<filter id='blur" + id + "' x='-60%' y='-60%' width='220%' height='220%'>" +
-      "<feGaussianBlur stdDeviation='10'/>" +
-      "</filter>" +
-      "</defs>";
-    return { defs: defs, fill: "url(#g" + id + ")", stroke: stroke, light: light, light2: light2, dark: dark, dark2: dark2, sheen: "url(#sheen" + id + ")" };
-  }
-  // Two-layer soft shadow: a wide, heavily blurred ambient shadow for
-  // grounding + a tighter gradient contact shadow for definition.
-  function groundShadow(id, cx, cy, rx, ry) {
-    return "<ellipse cx='" + cx + "' cy='" + (cy + ry * 0.35) + "' rx='" + (rx * 1.35) + "' ry='" + (ry * 1.2) + "' fill='#0a1220' opacity='0.14' filter='url(#blur" + id + ")'/>" +
-      "<ellipse cx='" + cx + "' cy='" + cy + "' rx='" + rx + "' ry='" + ry + "' fill='url(#shadow" + id + ")'/>";
-  }
-  // Neutral studio backdrop (gradient + vignette) drawn behind every mockup.
-  // Colour-independent, so it never needs per-product edits either.
-  function studioBackdrop(uid) {
-    return "<defs>" +
-      "<linearGradient id='backdrop" + uid + "' x1='0%' y1='0%' x2='0%' y2='100%'>" +
-      "<stop offset='0%' stop-color='#eef1f6'/>" +
-      "<stop offset='58%' stop-color='#e4e8ef'/>" +
-      "<stop offset='100%' stop-color='#d6dbe4'/>" +
-      "</linearGradient>" +
-      "<radialGradient id='vignette" + uid + "' cx='50%' cy='36%' r='78%'>" +
-      "<stop offset='0%' stop-color='#ffffff' stop-opacity='0.55'/>" +
-      "<stop offset='55%' stop-color='#ffffff' stop-opacity='0'/>" +
-      "<stop offset='100%' stop-color='#000000' stop-opacity='0.12'/>" +
-      "</radialGradient>" +
-      "</defs>" +
-      "<rect x='0' y='0' width='400' height='500' fill='url(#backdrop" + uid + ")'/>" +
-      "<rect x='0' y='0' width='400' height='500' fill='url(#vignette" + uid + ")'/>";
-  }
-
-  /* ---------- SVG generators (realistic shaded product renders) ---------- */
-  var generators = {
-
-    tshirt: function (c) {
-      var s = svgOpen('tshirt', c);
-      var d = "M172,42 Q200,62 228,42 L252,54 L302,66 Q320,72 322,90 L324,104 Q324,118 306,122 L288,124 Q266,116 250,98 L256,180 L252,260 L246,300 Q200,310 154,300 L148,260 L144,180 L150,98 Q134,116 112,124 L94,122 Q76,118 76,104 L78,90 Q80,72 98,66 L148,54 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('tshirt', 200, 340, 108, 15) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<path d='M172,42 Q200,62 228,42' fill='none' stroke='" + s.stroke + "' stroke-width='3' stroke-linecap='round' opacity='0.7'/>" +
-        "<path d='M148,54 L150,98 M252,54 L250,98' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
-        "<path d='M146,190 Q200,200 254,190' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.22'/>" +
-        "</svg>";
-    },
-
-    hoodie: function (c) {
-      var s = svgOpen('hoodie', c);
-      var d = "M176,58 L252,58 L308,68 Q326,76 328,94 L332,224 Q332,240 316,246 L296,244 L252,116 L258,190 L254,300 L248,392 Q200,404 152,392 L146,300 L142,190 L148,116 L104,244 L84,246 Q68,240 68,224 L72,94 Q74,76 92,68 L148,58 Z";
-      var hood = "M158,64 Q160,14 200,12 Q240,14 242,64 Q238,66 232,60 Q216,44 200,44 Q184,44 168,60 Q162,66 158,64 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('hoodie', 200, 430, 122, 15) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<path d='" + hood + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + hood + "' fill='" + s.sheen + "'/>" +
-        "<path d='M200,20 Q182,34 176,58 M200,20 Q218,34 224,58' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4' fill='none'/>" +
-        "<circle cx='186' cy='74' r='2.8' fill='" + s.stroke + "' opacity='0.75'/><circle cx='214' cy='74' r='2.8' fill='" + s.stroke + "' opacity='0.75'/>" +
-        "<path d='M186,74 Q182,108 176,140 M214,74 Q218,108 224,140' fill='none' stroke='" + s.dark + "' stroke-width='2' opacity='0.5'/>" +
-        "<path d='M296,220 L332,206 L332,240 Q332,246 326,247 L300,244 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
-        "<path d='M104,220 L68,206 L68,240 Q68,246 74,247 L100,244 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
-        "<path d='M154,260 Q200,278 246,260 L250,330 Q200,346 150,330 Z' fill='none' stroke='" + s.stroke + "' stroke-width='1.8' opacity='0.55'/>" +
-        "<path d='M154,260 Q200,278 246,260' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.3'/>" +
-        "<path d='M152,384 Q200,396 248,384' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.3'/>" +
-        "</svg>";
-    },
-
-    tanktop: function (c) {
-      var s = svgOpen('tanktop', c);
-      var d = "M175,50 Q200,82 225,50 Q246,58 254,80 Q262,100 256,128 L260,220 L256,300 L250,352 Q200,364 150,352 L144,300 L140,220 L144,128 Q138,100 146,80 Q154,58 175,50 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('tanktop', 200, 360, 98, 14) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<path d='M182,50 L188,20 Q188,16 194,16 L198,16 L198,46 M218,50 L212,20 Q212,16 206,16 L202,16 L202,46' fill='none' stroke='" + s.stroke + "' stroke-width='2' stroke-linejoin='round' opacity='0.85'/>" +
-        "<path d='M175,50 Q200,78 225,50' fill='none' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linecap='round' opacity='0.6'/>" +
-        "<path d='M254,80 Q262,100 256,128 M146,80 Q138,100 144,128' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
-        "<path d='M142,240 Q200,250 258,240' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.2'/>" +
-        "</svg>";
-    },
-
-    longsleeve: function (c) {
-      var s = svgOpen('longsleeve', c);
-      var d = "M172,42 Q200,62 228,42 L252,54 L296,64 Q312,70 314,86 L326,240 Q328,254 314,258 L296,254 L262,148 L256,180 L252,260 L246,300 Q200,310 154,300 L148,260 L144,180 L138,148 L104,254 L86,258 Q72,254 74,240 L86,86 Q88,70 104,64 L148,54 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('longsleeve', 200, 340, 112, 15) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<path d='M172,42 Q200,62 228,42' fill='none' stroke='" + s.stroke + "' stroke-width='3' stroke-linecap='round' opacity='0.7'/>" +
-        "<path d='M148,54 L138,148 M252,54 L262,148' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
-        "<path d='M146,190 Q200,200 254,190' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.22'/>" +
-        "<path d='M76,236 L98,240' stroke='" + s.stroke + "' stroke-width='1.5' opacity='0.5'/><path d='M324,236 L302,240' stroke='" + s.stroke + "' stroke-width='1.5' opacity='0.5'/>" +
-        "</svg>";
-    },
-
-    polo: function (c) {
-      var s = svgOpen('polo', c);
-      var d = "M172,48 L182,62 L164,86 L188,100 L182,60 L252,54 L302,66 Q320,72 322,90 L324,104 Q324,118 306,122 L288,124 Q266,116 250,98 L256,180 L252,260 L246,300 Q200,310 154,300 L148,260 L144,180 L150,98 Q134,116 112,124 L94,122 Q76,118 76,104 L78,90 Q80,72 98,66 L148,54 L218,60 L212,100 L236,86 L218,62 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('polo', 200, 340, 108, 15) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<path d='M182,60 L172,48 L164,86 L188,100 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='2' stroke-linejoin='round'/>" +
-        "<path d='M218,60 L228,48 L236,86 L212,100 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='2' stroke-linejoin='round'/>" +
-        "<rect x='194' y='100' width='12' height='66' rx='2' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.6'/>" +
-        "<circle cx='200' cy='118' r='2.6' fill='" + s.dark + "' opacity='0.6'/><circle cx='200' cy='140' r='2.6' fill='" + s.dark + "' opacity='0.6'/><circle cx='200' cy='162' r='2.6' fill='" + s.dark + "' opacity='0.6'/>" +
-        "<path d='M148,54 L150,98 M252,54 L250,98' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
-        "<path d='M146,190 Q200,200 254,190' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.2'/>" +
-        "</svg>";
-    },
-
-    mug: function (c) {
-      var s = svgOpen('mug', c);
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('mug', 200, 385, 110, 14) +
-        "<path d='M300 185 Q355 185 355 232 Q355 279 300 279' fill='none' stroke='" + s.stroke + "' stroke-width='14' stroke-linecap='round'/>" +
-        "<path d='M300 185 Q355 185 355 232 Q355 279 300 279' fill='none' stroke='" + s.fill + "' stroke-width='9' stroke-linecap='round'/>" +
-        "<rect x='100' y='125' width='200' height='250' rx='8' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='100' y='125' width='200' height='250' rx='8' fill='" + s.sheen + "'/>" +
-        "<ellipse cx='200' cy='125' rx='100' ry='14' fill='" + s.dark + "' opacity='0.6'/>" +
-        "<ellipse cx='200' cy='123' rx='94' ry='11' fill='" + s.fill + "'/>" +
-        "<rect x='118' y='145' width='16' height='210' rx='8' fill='#ffffff' opacity='0.28'/>" +
-        "</svg>";
-    },
-
-    travelmug: function (c) {
-      var s = svgOpen('travelmug', c);
-      var d = "M140 100 L130 400 Q130 420 150 420 L250 420 Q270 420 270 400 L260 100 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('travelmug', 200, 425, 75, 12) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<ellipse cx='200' cy='100' rx='60' ry='16' fill='" + s.dark + "' opacity='0.55'/>" +
-        "<rect x='170' y='68' width='60' height='18' rx='6' fill='" + s.stroke + "'/>" +
-        "<rect x='177' y='72' width='46' height='6' rx='3' fill='#ffffff' opacity='0.25'/>" +
-        "<rect x='150' y='150' width='12' height='230' rx='6' fill='#ffffff' opacity='0.25'/>" +
-        "</svg>";
-    },
-
-    bottle: function (c) {
-      var s = svgOpen('bottle', c);
-      var d = "M160 90 L150 420 Q150 450 180 450 L220 450 Q250 450 250 420 L240 90 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('bottle', 200, 445, 65, 12) +
-        "<rect x='172' y='48' width='56' height='42' rx='4' fill='" + s.stroke + "'/>" +
-        "<rect x='178' y='52' width='44' height='8' rx='3' fill='#ffffff' opacity='0.3'/>" +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<rect x='166' y='150' width='14' height='250' rx='7' fill='#ffffff' opacity='0.28'/>" +
-        "</svg>";
-    },
-
-    tumbler: function (c) {
-      var s = svgOpen('tumbler', c);
-      var d = "M150 90 L140 400 Q140 430 175 430 L225 430 Q260 430 260 400 L250 90 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('tumbler', 200, 445, 68, 12) +
-        "<path d='" + d + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='" + d + "' fill='" + s.sheen + "'/>" +
-        "<ellipse cx='200' cy='90' rx='50' ry='14' fill='" + s.dark + "' opacity='0.5'/>" +
-        "<rect x='157' y='140' width='13' height='250' rx='6' fill='#ffffff' opacity='0.28'/>" +
-        "</svg>";
-    },
-
-    totebag: function (c) {
-      var s = svgOpen('totebag', c);
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('totebag', 200, 446, 118, 14) +
-        "<path d='M148,150 Q144,84 172,72' fill='none' stroke='" + s.stroke + "' stroke-width='9' stroke-linecap='round'/>" +
-        "<path d='M148,150 Q144,84 172,72' fill='none' stroke='" + s.fill + "' stroke-width='5' stroke-linecap='round'/>" +
-        "<path d='M252,150 Q256,84 228,72' fill='none' stroke='" + s.stroke + "' stroke-width='9' stroke-linecap='round'/>" +
-        "<path d='M252,150 Q256,84 228,72' fill='none' stroke='" + s.fill + "' stroke-width='5' stroke-linecap='round'/>" +
-        "<path d='M104,150 L296,150 L286,430 Q284,444 270,444 L130,444 Q116,444 114,430 Z' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M104,150 L296,150 L286,430 Q284,444 270,444 L130,444 Q116,444 114,430 Z' fill='" + s.sheen + "'/>" +
-        "<path d='M104,150 L296,150' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.5'/>" +
-        "<path d='M104,150 L96,430 M296,150 L304,430' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.3'/>" +
-        "<path d='M118,196 L282,196' stroke='" + s.dark + "' stroke-width='1' opacity='0.22' stroke-dasharray='4,4'/>" +
-        "<path d='M118,430 Q200,442 282,430' fill='none' stroke='" + s.dark + "' stroke-width='1' opacity='0.2'/>" +
-        "</svg>";
-    },
-
-    backpack: function (c) {
-      var s = svgOpen('backpack', c);
-      var body = "M116,140 Q112,120 132,112 L268,112 Q288,120 284,140 L288,400 Q288,428 260,430 L140,430 Q112,428 112,400 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('backpack', 200, 446, 105, 14) +
-        "<path d='M150,96 Q140,180 148,300 Q150,340 168,360' fill='none' stroke='" + s.stroke + "' stroke-width='16' stroke-linecap='round' opacity='0.9'/>" +
-        "<path d='M150,96 Q140,180 148,300 Q150,340 168,360' fill='none' stroke='" + s.fill + "' stroke-width='11' stroke-linecap='round'/>" +
-        "<path d='M250,96 Q260,180 252,300 Q250,340 232,360' fill='none' stroke='" + s.stroke + "' stroke-width='16' stroke-linecap='round' opacity='0.9'/>" +
-        "<path d='M250,96 Q260,180 252,300 Q250,340 232,360' fill='none' stroke='" + s.fill + "' stroke-width='11' stroke-linecap='round'/>" +
-        "<path d='M172,92 Q172,66 200,66 Q228,66 228,92' fill='none' stroke='" + s.stroke + "' stroke-width='8' stroke-linecap='round'/>" +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "<path d='M138,220 Q200,206 262,220 L266,340 Q200,356 134,340 Z' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='2'/>" +
-        "<path d='M138,220 Q200,206 262,220' fill='none' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.4'/>" +
-        "<path d='M140,222 Q200,209 260,222' fill='none' stroke='" + s.dark + "' stroke-width='1.5' stroke-dasharray='3,3' opacity='0.5'/>" +
-        "<circle cx='255' cy='221' r='4' fill='" + s.stroke + "'/>" +
-        "<rect x='120' y='270' width='14' height='24' rx='3' fill='" + s.dark + "' opacity='0.6'/>" +
-        "<rect x='266' y='270' width='14' height='24' rx='3' fill='" + s.dark + "' opacity='0.6'/>" +
-        "</svg>";
-    },
-
-    cap: function (c) {
-      var s = svgOpen('cap', c);
-      var crown = "M96,214 Q94,108 200,100 Q306,108 304,214 Q304,224 294,227 L106,227 Q96,224 96,214 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('cap', 200, 270, 128, 15) +
-        "<path d='M108,216 Q104,246 128,258 Q200,272 292,246 Q308,240 306,228 Q302,220 292,222 Q200,242 118,220 Q110,216 108,216 Z' fill='" + s.dark + "' stroke='" + s.stroke + "' stroke-width='2'/>" +
-        "<path d='M118,224 Q200,244 296,226' fill='none' stroke='" + s.dark2 + "' stroke-width='1' opacity='0.5'/>" +
-        "<path d='" + crown + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + crown + "' fill='" + s.sheen + "'/>" +
-        "<path d='M200,103 L200,225 M148,108 Q142,166 150,224 M252,108 Q258,166 250,224' stroke='" + s.dark + "' stroke-width='1.2' opacity='0.35' fill='none'/>" +
-        "<circle cx='200' cy='105' r='6' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='1.5'/>" +
-        "</svg>";
-    },
-
-    beanie: function (c) {
-      var s = svgOpen('beanie', c);
-      var body = "M122,260 Q118,150 200,138 Q282,150 278,260 L278,296 Q278,304 270,304 L130,304 Q122,304 122,296 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('beanie', 200, 330, 100, 14) +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='M148,152 Q140,220 144,262 M252,152 Q260,220 256,262 M200,140 L200,264' stroke='" + s.dark + "' stroke-width='1.1' opacity='0.3' fill='none'/>" +
-        "<rect x='122' y='262' width='156' height='42' rx='4' fill='" + s.dark + "' opacity='0.22' stroke='" + s.stroke + "' stroke-width='2'/>" +
-        "<path d='M124,272 L276,272 M124,282 L276,282 M124,292 L276,292' stroke='" + s.dark + "' stroke-width='1' opacity='0.35'/>" +
-        "<circle cx='200' cy='132' r='12' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
-        "<path d='M200,124 L200,140 M192,132 L208,132' stroke='" + s.dark + "' stroke-width='1' opacity='0.4'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "</svg>";
-    },
-
-    phonecase: function (c) {
-      var s = svgOpen('phonecase', c);
-      var body = "M144,90 Q140,78 152,74 L248,74 Q260,78 256,90 L262,300 Q262,326 236,328 L164,328 Q138,326 138,300 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('phonecase', 200, 352, 78, 12) +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "<rect x='160' y='86' width='58' height='58' rx='14' fill='" + s.dark + "' opacity='0.35' stroke='" + s.stroke + "' stroke-width='1.8'/>" +
-        "<circle cx='178' cy='104' r='12' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.5'/><circle cx='178' cy='104' r='5' fill='" + s.dark2 + "' opacity='0.6'/>" +
-        "<circle cx='202' cy='104' r='12' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.5'/><circle cx='202' cy='104' r='5' fill='" + s.dark2 + "' opacity='0.6'/>" +
-        "<circle cx='178' cy='128' r='9' fill='" + s.light + "' stroke='" + s.stroke + "' stroke-width='1.5'/><circle cx='178' cy='128' r='4' fill='" + s.dark2 + "' opacity='0.6'/>" +
-        "<rect x='134' y='150' width='6' height='26' rx='3' fill='" + s.stroke + "' opacity='0.7'/>" +
-        "<rect x='260' y='140' width='6' height='20' rx='3' fill='" + s.stroke + "' opacity='0.7'/>" +
-        "<rect x='260' y='170' width='6' height='36' rx='3' fill='" + s.stroke + "' opacity='0.7'/>" +
-        "<rect x='185' y='312' width='30' height='5' rx='2.5' fill='" + s.dark + "' opacity='0.4'/>" +
-        "</svg>";
-    },
-
-    laptopsleeve: function (c) {
-      var s = svgOpen('laptopsleeve', c);
-      var body = "M80,150 L320,150 Q328,150 328,158 L328,322 Q328,330 320,330 L80,330 Q72,330 72,322 L72,158 Q72,150 80,150 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('laptopsleeve', 200, 350, 130, 14) +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "<rect x='95' y='163' width='210' height='154' rx='5' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
-        "<path d='M300,232 L322,240 L300,248 Z' fill='" + s.stroke + "'/>" +
-        "<path d='M300,232 L322,240 L300,248' fill='none' stroke='" + s.dark2 + "' stroke-width='1' opacity='0.3'/>" +
-        "</svg>";
-    },
-
-    mousepad: function (c) {
-      var s = svgOpen('mousepad', c);
-      var body = "M90,180 Q90,164 106,164 L294,164 Q310,164 310,180 L310,320 Q310,336 294,336 L106,336 Q90,336 90,320 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('mousepad', 200, 344, 130, 12) +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "<rect x='90' y='320' width='220' height='16' rx='4' fill='" + s.dark + "' opacity='0.18'/>" +
-        "</svg>";
-    },
-
-    powerbank: function (c) {
-      var s = svgOpen('powerbank', c);
-      var body = "M140,178 Q140,170 148,170 L252,170 Q260,170 260,178 L260,362 Q260,370 252,370 L148,370 Q140,370 140,362 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('powerbank', 200, 390, 90, 12) +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "<circle cx='200' cy='196' r='4.5' fill='" + s.dark + "' opacity='0.6'/>" +
-        "<circle cx='182' cy='330' r='4' fill='none' stroke='" + s.dark + "' stroke-width='1.4' opacity='0.55'/>" +
-        "<circle cx='195' cy='330' r='4' fill='none' stroke='" + s.dark + "' stroke-width='1.4' opacity='0.4'/>" +
-        "<circle cx='208' cy='330' r='4' fill='none' stroke='" + s.dark + "' stroke-width='1.4' opacity='0.25'/>" +
-        "<rect x='185' y='348' width='30' height='8' rx='4' fill='" + s.dark + "' opacity='0.45'/>" +
-        "</svg>";
-    },
-
-    notebook: function (c) {
-      var s = svgOpen('notebook', c);
-      var cover = "M126,100 L290,100 Q290,100 290,100 L290,384 L126,384 Z";
-      var coil = ["M116,110 Q128,110 128,120 Q128,130 116,130", "M116,136 Q128,136 128,146 Q128,156 116,156",
-        "M116,162 Q128,162 128,172 Q128,182 116,182", "M116,188 Q128,188 128,198 Q128,208 116,208",
-        "M116,214 Q128,214 128,224 Q128,234 116,234", "M116,240 Q128,240 128,250 Q128,260 116,260",
-        "M116,266 Q128,266 128,276 Q128,286 116,286", "M116,292 Q128,292 128,302 Q128,312 116,312",
-        "M116,318 Q128,318 128,328 Q128,338 116,338", "M116,344 Q128,344 128,354 Q128,364 116,364",
-        "M116,370 Q128,370 128,378 Q128,384 116,384"].join(" ");
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('notebook', 200, 398, 112, 14) +
-        "<rect x='130' y='106' width='168' height='276' rx='3' fill='#efece4'/>" +
-        "<rect x='128' y='104' width='168' height='276' rx='3' fill='#f4f1ea'/>" +
-        "<rect x='126' y='100' width='164' height='284' rx='4' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<rect x='126' y='100' width='164' height='284' rx='4' fill='" + s.sheen + "'/>" +
-        "<g fill='none' stroke='" + s.dark2 + "' stroke-width='3' stroke-linecap='round' opacity='0.75'>" +
-        "<path d='" + coil + "'/></g>" +
-        "<rect x='266' y='100' width='10' height='284' fill='" + s.dark + "' opacity='0.4'/>" +
-        "</svg>";
-    },
-
-    sticker: function (c) {
-      var s = svgOpen('sticker', c);
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('sticker', 200, 358, 105, 12) +
-        "<circle cx='200' cy='250' r='106' fill='#f7f5ef' stroke='#e2ded0' stroke-width='1'/>" +
-        "<circle cx='200' cy='250' r='103' fill='none' stroke='#c9c4b4' stroke-width='1.5' stroke-dasharray='5,4'/>" +
-        "<circle cx='198' cy='248' r='95' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5'/>" +
-        "<circle cx='198' cy='248' r='95' fill='" + s.sheen + "'/>" +
-        "<ellipse cx='168' cy='213' rx='30' ry='16' fill='#ffffff' opacity='0.22'/>" +
-        "<path d='M280,175 Q300,190 296,215 Q286,206 270,206 Q276,190 280,175 Z' fill='#f7f5ef' stroke='#c9c4b4' stroke-width='1.2'/>" +
-        "<path d='M270,206 Q286,206 296,215' fill='none' stroke='#c9c4b4' stroke-width='1' opacity='0.5'/>" +
-        "</svg>";
-    },
-
-    poster: function (c) {
-      var s = svgOpen('poster', c);
-      var body = "M100,52 L300,50 L302,432 Q280,448 200,450 Q120,448 98,432 Z";
-      return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'>" + s.defs +
-        groundShadow('poster', 200, 464, 112, 13) +
-        "<path d='" + body + "' fill='" + s.fill + "' stroke='" + s.stroke + "' stroke-width='2.5' stroke-linejoin='round'/>" +
-        "<path d='" + body + "' fill='" + s.sheen + "'/>" +
-        "<path d='M100,52 L300,50' fill='none' stroke='#ffffff' stroke-width='2' opacity='0.3'/>" +
-        "<path d='M98,432 Q120,448 200,450 Q280,448 302,432' fill='none' stroke='" + s.dark + "' stroke-width='1.5' opacity='0.4'/>" +
-        "<circle cx='112' cy='58' r='6' fill='" + s.dark2 + "'/><circle cx='112' cy='58' r='2.4' fill='#ffffff' opacity='0.6'/>" +
-        "<circle cx='288' cy='58' r='6' fill='" + s.dark2 + "'/><circle cx='288' cy='58' r='2.4' fill='#ffffff' opacity='0.6'/>" +
-        "</svg>";
-    }
-  };
-
-  // Photographic finishing pass — fine material grain + a soft diagonal
-  // studio-light sweep + a gentle vignette. Purely additive (alpha only, no
-  // blend-modes, so it renders identically wherever the SVG is used — as an
-  // <img> src, inline, or rasterized to PNG). Spliced in once per render in
-  // svgToDataUrl below, so every one of the 20 products gets it for free.
-  function realismPass(uid) {
-    return "<defs>" +
-      "<filter id='grain" + uid + "' x='0' y='0' width='100%' height='100%'>" +
-      "<feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' result='n'/>" +
-      "<feColorMatrix in='n' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0'/>" +
-      "</filter>" +
-      "<linearGradient id='sweep" + uid + "' x1='8%' y1='0%' x2='78%' y2='100%'>" +
-      "<stop offset='0%' stop-color='#ffffff' stop-opacity='0.20'/>" +
-      "<stop offset='26%' stop-color='#ffffff' stop-opacity='0'/>" +
-      "<stop offset='70%' stop-color='#ffffff' stop-opacity='0'/>" +
-      "<stop offset='100%' stop-color='#000000' stop-opacity='0.06'/>" +
-      "</linearGradient>" +
-      "<radialGradient id='vig" + uid + "' cx='50%' cy='40%' r='74%'>" +
-      "<stop offset='0%' stop-color='#000000' stop-opacity='0'/>" +
-      "<stop offset='70%' stop-color='#000000' stop-opacity='0'/>" +
-      "<stop offset='100%' stop-color='#000000' stop-opacity='0.10'/>" +
-      "</radialGradient>" +
-      "</defs>" +
-      "<rect x='0' y='0' width='400' height='500' filter='url(#grain" + uid + ")' pointer-events='none'/>" +
-      "<rect x='0' y='0' width='400' height='500' fill='url(#sweep" + uid + ")' pointer-events='none'/>" +
-      "<rect x='0' y='0' width='400' height='500' fill='url(#vig" + uid + ")' pointer-events='none'/>";
-  }
-
-  function svgToDataUrl(id, color) {
-    var svg = generators[id](color);
-    // Every generator returns a self-contained <svg>...</svg> string. We
-    // splice the shared studio backdrop in right after the opening tag, and
-    // the realism pass in right before the closing tag — the two places
-    // that touch all products, so upgrading the shared "camera" (backdrop,
-    // grain, light sweep, vignette) never requires editing the 20
-    // individual generator functions above.
-    svg = svg.replace(/(<svg[^>]*>)/, '$1' + studioBackdrop(id));
-    svg = svg.replace(/<\/svg>\s*$/, realismPass(id) + '</svg>');
-    return 'data:image/svg+xml,' + encodeURIComponent(svg);
-  }
 
   /* ---------- State ---------- */
   var currentProduct = products[0];
-  var currentColor = '#ffffff';           // string (solid) or {mode:'gradient', from, to, direction}
-  var colorMode = 'solid';                // 'solid' | 'gradient'
-  var isCustomMockup = false;             // true when the user uploaded their own base photo
-  var currentPosition = 'center';
+  var currentSide = 'front';
+  var currentColor = '#ffffff';
+  var colorMode = 'solid';
+  var isCustomMockup = false;
+  var currentPositionPreset = 'center';
   var logoDataUrl = null;
-  var isDragging = false;
-  var dragOffsetX = 0, dragOffsetY = 0;
 
+  var productPos = { x: 0, y: 0 };   // px offset of product-mount from canvas centre
+  var productRot = 0;                 // degrees
+  var logoOffset = { x: 0, y: 0 };    // px offset of logo from product-mount centre (local, pre-rotation)
+  var logoSize = 110;                 // px, effective rendered size (base * product.logoScale)
+  var logoSizeBase = 110;             // px, raw slider value chosen by the user
+
+  /* ---------- DOM refs ---------- */
   var productGrid = document.getElementById('productGrid');
-  var mockupImage = document.getElementById('mockupImage');
+  var productSvg = document.getElementById('productSvg');
+  var productArt = document.getElementById('productArt');
   var studioProductName = document.getElementById('studioProductName');
-  var logoOverlay = document.getElementById('logoOverlay');
+  var studioHint = document.getElementById('studioHint');
+  var studioCredit = document.getElementById('studioCredit');
+  var sideToggleBtn = document.getElementById('sideToggleBtn');
+  var sideToggleLabel = document.getElementById('sideToggleLabel');
+  var studioCanvas = document.getElementById('studioCanvas');
+  var productMount = document.getElementById('productMount');
+  var logoMount = document.getElementById('logoMount');
+  var logoOverlay = document.getElementById('logoOverlay'); // <img> for the logo
+  var rotateHandle = document.getElementById('rotateHandle');
+  var customPhotoMount = document.getElementById('customPhotoMount');
+  var mockupImage = document.getElementById('mockupImage');
+  var mockupRecolor = document.getElementById('mockupRecolor');
+
   var logoUpload = document.getElementById('logoUpload');
   var logoFileName = document.getElementById('logoFileName');
   var colorSwatches = document.getElementById('colorSwatches');
@@ -526,7 +169,6 @@
   var downloadBtn = document.getElementById('downloadBtn');
   var studioForm = document.getElementById('studioForm');
   var studioFormNote = document.getElementById('studioFormNote');
-  var studioCanvas = document.getElementById('studioCanvas');
   var filterTabs = document.querySelectorAll('.filter-tabs .filter-tab');
 
   var colorControlsField = document.getElementById('colorControlsField');
@@ -541,23 +183,121 @@
   var customMockupNote = document.getElementById('customMockupNote');
   var clearCustomMockup = document.getElementById('clearCustomMockup');
 
-  /* ---------- Build product grid ---------- */
+  /* ---------- Build product grid (thumbnails render the real vector art) ---------- */
   products.forEach(function (p, index) {
     var thumb = document.createElement('div');
     thumb.className = 'product-thumb' + (index === 0 ? ' is-active' : '');
     thumb.setAttribute('data-cat', p.cat);
-    thumb.innerHTML = '<img src="' + svgToDataUrl(p.id, '#ffffff') + '" alt="' + p.name + '"><span>' + p.name + '</span>';
+    thumb.innerHTML =
+      '<div class="product-thumb-media"><svg viewBox="0 0 300 300">' + p.front + '</svg></div>' +
+      '<span>' + p.name + '</span>';
     thumb.addEventListener('click', function () { selectProduct(p, thumb); });
     productGrid.appendChild(thumb);
   });
 
+  /* ---------- Gradient <defs> (built once, updated in place) ---------- */
+  var svgDefs = productSvg.querySelector('defs');
+  var GRAD_ID = 'jcMockupGradient';
+  function ensureGradientDef(spec) {
+    svgDefs.innerHTML = '';
+    var isRadial = spec.direction === 'radial';
+    var grad = document.createElementNS('http://www.w3.org/2000/svg', isRadial ? 'radialGradient' : 'linearGradient');
+    grad.setAttribute('id', GRAD_ID);
+    if (isRadial) {
+      grad.setAttribute('cx', '42%'); grad.setAttribute('cy', '35%'); grad.setAttribute('r', '75%');
+    } else {
+      var coords = {
+        diagonal:   { x1: '0%', y1: '0%', x2: '100%', y2: '100%' },
+        vertical:   { x1: '0%', y1: '0%', x2: '0%', y2: '100%' },
+        horizontal: { x1: '0%', y1: '0%', x2: '100%', y2: '0%' }
+      };
+      var c = coords[spec.direction] || coords.diagonal;
+      grad.setAttribute('x1', c.x1); grad.setAttribute('y1', c.y1);
+      grad.setAttribute('x2', c.x2); grad.setAttribute('y2', c.y2);
+    }
+    var stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%'); stop1.setAttribute('stop-color', spec.from);
+    var stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%'); stop2.setAttribute('stop-color', spec.to);
+    grad.appendChild(stop1); grad.appendChild(stop2);
+    svgDefs.appendChild(grad);
+  }
+
+  function colorFillValue() {
+    if (typeof currentColor === 'object' && currentColor.mode === 'gradient') {
+      ensureGradientDef(currentColor);
+      return 'url(#' + GRAD_ID + ')';
+    }
+    return currentColor;
+  }
+
+  function applyColorToArt() {
+    var fillValue = colorFillValue();
+    productArt.querySelectorAll('.jc-fill').forEach(function (el) { el.setAttribute('fill', fillValue); });
+  }
+
+  function refreshMockupColor() {
+    if (isCustomMockup) {
+      mockupRecolor.style.background = colorToCssBackground(currentColor);
+    } else {
+      applyColorToArt();
+    }
+  }
+
+  function colorToCssBackground(color) {
+    if (typeof color === 'object' && color.mode === 'gradient') {
+      var coords = { diagonal: '135deg', vertical: '180deg', horizontal: '90deg' };
+      if (color.direction === 'radial') {
+        return 'radial-gradient(circle at 42% 32%, ' + color.from + ', ' + color.to + ')';
+      }
+      return 'linear-gradient(' + (coords[color.direction] || coords.diagonal) + ', ' + color.from + ', ' + color.to + ')';
+    }
+    return color;
+  }
+
+  /* ---------- Product art + side (front/back) ---------- */
+  function currentAnchor() {
+    var a = currentProduct.logoAnchor || { front: { x: 0, y: 0 }, back: { x: 0, y: 0 } };
+    return a[currentSide] || a.front || { x: 0, y: 0 };
+  }
+
+  function renderProductArt() {
+    var markup = (currentSide === 'back' && currentProduct.back) ? currentProduct.back : currentProduct.front;
+    productArt.innerHTML = markup;
+    applyColorToArt();
+  }
+
+  function setSide(side) {
+    currentSide = (side === 'back' && currentProduct.hasBack) ? 'back' : 'front';
+    renderProductArt();
+    applyPositionPreset(currentPositionPreset);
+    sideToggleLabel.textContent = currentSide === 'front' ? 'View Back' : 'View Front';
+    sideToggleBtn.setAttribute('aria-label', currentSide === 'front' ? 'Flip to back view' : 'Flip to front view');
+  }
+
+  function updateSideToggleAvailability() {
+    var show = !isCustomMockup && currentProduct.hasBack;
+    sideToggleBtn.style.visibility = show ? 'visible' : 'hidden';
+  }
+
+  /* ---------- Select a library product ---------- */
   function selectProduct(product, thumbEl) {
     currentProduct = product;
     exitCustomMockupMode();
     document.querySelectorAll('.product-thumb').forEach(function (t) { t.classList.remove('is-active'); });
-    thumbEl.classList.add('is-active');
+    if (thumbEl) thumbEl.classList.add('is-active');
     studioProductName.textContent = product.name;
-    mockupImage.src = svgToDataUrl(product.id, currentColor);
+    studioCredit.textContent = 'Vector product — recolour, drag, rotate' + (product.hasBack ? ' and flip' : '') + ' freely.';
+    currentColor = colorSwatches.querySelector('.swatch.is-active:not(.swatch-custom)')
+      ? colorSwatches.querySelector('.swatch.is-active:not(.swatch-custom)').getAttribute('data-color')
+      : (product.defaultColor || '#ffffff');
+    productPos = { x: 0, y: 0 };
+    productRot = 0;
+    applyProductTransform();
+    updateSideToggleAvailability();
+    setSide('front');
+    refreshMockupColor();
+    applySize(sizeRange.value);
   }
 
   /* ---------- Category filter tabs ---------- */
@@ -574,7 +314,6 @@
   });
 
   /* ---------- Logo upload ---------- */
-  var uploadBox = document.querySelector('.upload-box');
   logoUpload.addEventListener('change', function (e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -586,39 +325,48 @@
     reader.onload = function (evt) {
       logoDataUrl = evt.target.result;
       logoOverlay.src = logoDataUrl;
-      logoOverlay.style.display = 'block';
+      logoMount.style.display = 'block';
       logoFileName.textContent = file.name;
       logoFileName.style.display = 'block';
-      applyPosition(currentPosition);
+      applyPositionPreset(currentPositionPreset);
       applySize(sizeRange.value);
     };
     reader.readAsDataURL(file);
   });
 
-  /* ---------- Position presets ---------- */
-  function applyPosition(position) {
-    currentPosition = position;
-    var top = 45, left = 50;
-    if (position === 'left-chest') { top = 32; left = 35; }
-    if (position === 'right-chest') { top = 32; left = 65; }
-    if (position === 'center') { top = 45; left = 50; }
-    logoOverlay.style.top = top + '%';
-    logoOverlay.style.left = left + '%';
-    logoOverlay.style.transform = 'translate(-50%, -50%)';
+  /* ---------- Position presets (relative to the product's own anchor) ---------- */
+  function applyPositionPreset(preset) {
+    currentPositionPreset = preset;
+    var anchor = currentAnchor();
+    var x = anchor.x, y = anchor.y;
+    if (preset === 'left-chest') x = anchor.x - 42;
+    else if (preset === 'right-chest') x = anchor.x + 42;
+    logoOffset = { x: x, y: y };
+    applyLogoTransform();
   }
-
   positionBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
       positionBtns.forEach(function (b) { b.classList.remove('is-active'); });
       btn.classList.add('is-active');
-      applyPosition(btn.getAttribute('data-position'));
+      applyPositionPreset(btn.getAttribute('data-position'));
     });
   });
 
-  /* ---------- Size slider ---------- */
+  /* ---------- Size slider ----------
+     The slider itself always shows the user's chosen 40-200 value regardless
+     of product; the actual rendered size is scaled down per-product (via
+     product.logoScale) so a small item like a pen or mug doesn't get buried
+     under a logo sized for a t-shirt's chest print. */
+  function currentLogoScale() {
+    if (isCustomMockup) return 1;
+    return (currentProduct && typeof currentProduct.logoScale === 'number') ? currentProduct.logoScale : 1;
+  }
   function applySize(size) {
-    logoOverlay.style.maxWidth = size + 'px';
-    logoOverlay.style.maxHeight = size + 'px';
+    logoSizeBase = parseFloat(size);
+    logoSize = logoSizeBase * currentLogoScale();
+    logoMount.style.width = logoSize + 'px';
+    logoMount.style.height = logoSize + 'px';
+    applyLogoTransform();
   }
   sizeRange.addEventListener('input', function () { applySize(sizeRange.value); });
 
@@ -679,20 +427,35 @@
     });
   });
 
-  // Applies the current color/gradient to whichever product is on canvas —
-  // no-op while a custom uploaded photo is showing, since recoloring only
-  // makes sense for the generated product SVGs.
-  function refreshMockupColor() {
-    if (isCustomMockup) return;
-    mockupImage.src = svgToDataUrl(currentProduct.id, currentColor);
-  }
+  /* ---------- Front / Back toggle ---------- */
+  sideToggleBtn.addEventListener('click', function () {
+    if (isCustomMockup || !currentProduct.hasBack) return;
+    setSide(currentSide === 'front' ? 'back' : 'front');
+  });
 
-  /* ---------- Upload your own mockup photo ---------- */
+  /* ---------- Upload your own mockup photo (legacy static-photo path) ---------- */
+  function enterCustomMockupMode() {
+    isCustomMockup = true;
+    productMount.style.display = 'none';
+    customPhotoMount.style.display = 'block';
+    rotateHandle.style.display = 'none';
+    customPhotoMount.appendChild(logoMount);
+    logoOffset = { x: 0, y: 0 };
+    applyLogoTransform();
+    updateSideToggleAvailability();
+    applySize(sizeRange.value);
+  }
   function exitCustomMockupMode() {
     if (!isCustomMockup) return;
     isCustomMockup = false;
     customMockupNote.style.display = 'none';
     colorControlsField.classList.remove('is-disabled');
+    productMount.style.display = 'block';
+    customPhotoMount.style.display = 'none';
+    rotateHandle.style.display = 'flex';
+    productMount.appendChild(logoMount);
+    logoOffset = { x: 0, y: 0 };
+    applyLogoTransform();
   }
   mockupUpload.addEventListener('change', function (e) {
     var file = e.target.files[0];
@@ -703,10 +466,13 @@
     }
     var reader = new FileReader();
     reader.onload = function (evt) {
-      isCustomMockup = true;
-      currentProduct = { id: 'custom', name: 'Your Mockup', cat: 'custom' };
+      enterCustomMockupMode();
+      currentProduct = { id: 'custom', name: 'Your Mockup', cat: 'custom', hasBack: false };
       mockupImage.src = evt.target.result;
+      mockupImage.alt = 'Your uploaded mockup photo';
+      mockupRecolor.style.background = 'transparent';
       studioProductName.textContent = 'Your Custom Mockup';
+      studioCredit.textContent = '';
       document.querySelectorAll('.product-thumb').forEach(function (t) { t.classList.remove('is-active'); });
       customMockupNote.style.display = 'block';
       colorControlsField.classList.add('is-disabled');
@@ -719,86 +485,238 @@
     if (firstThumb) selectProduct(products[0], firstThumb);
   });
 
-  /* ---------- Drag to reposition ---------- */
-  logoOverlay.addEventListener('mousedown', startDrag);
-  logoOverlay.addEventListener('touchstart', startDrag, { passive: true });
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('touchmove', drag, { passive: true });
-  document.addEventListener('mouseup', stopDrag);
-  document.addEventListener('touchend', stopDrag);
-
-  function getPoint(e) {
-    if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
+  /* ---------- Transforms ---------- */
+  function applyProductTransform() {
+    productMount.style.transform =
+      'translate(-50%,-50%) translate(' + productPos.x + 'px,' + productPos.y + 'px) rotate(' + productRot + 'deg)';
+  }
+  function applyLogoTransform() {
+    logoMount.style.transform =
+      'translate(-50%,-50%) translate(' + logoOffset.x + 'px,' + logoOffset.y + 'px)';
   }
 
-  function startDrag(e) {
-    if (!logoDataUrl) return;
-    isDragging = true;
-    logoOverlay.classList.add('is-dragging');
-    var rect = logoOverlay.getBoundingClientRect();
-    var pt = getPoint(e);
-    dragOffsetX = pt.x - rect.left - rect.width / 2;
-    dragOffsetY = pt.y - rect.top - rect.height / 2;
+  /* ---------- Pointer-based drag: move product, rotate product, move logo ----------
+     Uses the Pointer Events API (one code path for mouse + touch + pen)
+     with setPointerCapture so a drag keeps tracking even if the pointer
+     leaves the element — the classic reason a drag "drops" mid-gesture. */
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  function bindDrag(handleEl, opts) {
+    var active = false;
+    var startX = 0, startY = 0;
+    var startState = null;
+    handleEl.addEventListener('pointerdown', function (e) {
+      if (opts.guard && !opts.guard()) return;
+      active = true;
+      startX = e.clientX; startY = e.clientY;
+      startState = opts.getState();
+      if (opts.activeClassEl) opts.activeClassEl.classList.add('is-dragging');
+      handleEl.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    handleEl.addEventListener('pointermove', function (e) {
+      if (!active) return;
+      var dx = e.clientX - startX, dy = e.clientY - startY;
+      opts.onMove(dx, dy, startState, e);
+    });
+    function end(e) {
+      if (!active) return;
+      active = false;
+      if (opts.activeClassEl) opts.activeClassEl.classList.remove('is-dragging');
+      try { handleEl.releasePointerCapture(e.pointerId); } catch (err) { /* noop */ }
+    }
+    handleEl.addEventListener('pointerup', end);
+    handleEl.addEventListener('pointercancel', end);
   }
 
-  function drag(e) {
-    if (!isDragging) return;
-    var canvasRect = studioCanvas.getBoundingClientRect();
-    var pt = getPoint(e);
-    var x = pt.x - canvasRect.left - dragOffsetX;
-    var y = pt.y - canvasRect.top - dragOffsetY;
-    x = Math.max(0, Math.min(x, canvasRect.width));
-    y = Math.max(0, Math.min(y, canvasRect.height));
-    logoOverlay.style.left = (x / canvasRect.width * 100) + '%';
-    logoOverlay.style.top = (y / canvasRect.height * 100) + '%';
-    logoOverlay.style.transform = 'translate(-50%, -50%)';
-  }
+  // Move the whole product (translate happens in the canvas's own
+  // unrotated coordinate space, so raw screen deltas map 1:1).
+  bindDrag(productSvg, {
+    activeClassEl: productMount,
+    getState: function () { return { x: productPos.x, y: productPos.y }; },
+    onMove: function (dx, dy, start) {
+      productPos.x = clamp(start.x + dx, -70, 70);
+      productPos.y = clamp(start.y + dy, -70, 70);
+      applyProductTransform();
+    }
+  });
 
-  function stopDrag() {
-    isDragging = false;
-    logoOverlay.classList.remove('is-dragging');
-  }
+  // Rotate: angle from the mount's centre to the pointer, delta-applied
+  // to the rotation the drag started at.
+  bindDrag(rotateHandle, {
+    getState: function () {
+      var rect = productMount.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+      return { rot: productRot, cx: cx, cy: cy, startAngle: null };
+    },
+    onMove: function (dx, dy, start, e) {
+      var angleNow = Math.atan2(e.clientY - start.cy, e.clientX - start.cx) * 180 / Math.PI;
+      if (start.startAngle === null) start.startAngle = angleNow - productRot;
+      productRot = Math.round(angleNow - start.startAngle);
+      applyProductTransform();
+    }
+  });
+
+  // Move the logo — screen-space deltas are rotated into the mount's
+  // local (pre-rotation) frame so the logo tracks the pointer correctly
+  // even while the product itself is spun to an angle.
+  bindDrag(logoMount, {
+    guard: function () { return !!logoDataUrl; },
+    activeClassEl: logoMount,
+    getState: function () { return { x: logoOffset.x, y: logoOffset.y }; },
+    onMove: function (dx, dy, start) {
+      var rot = isCustomMockup ? 0 : productRot;
+      var rad = rot * Math.PI / 180;
+      var cos = Math.cos(rad), sin = Math.sin(rad);
+      var localDX = dx * cos + dy * sin;
+      var localDY = -dx * sin + dy * cos;
+      logoOffset.x = clamp(start.x + localDX, -150, 150);
+      logoOffset.y = clamp(start.y + localDY, -150, 150);
+      applyLogoTransform();
+    }
+  });
 
   /* ---------- Reset ---------- */
   resetLogoBtn.addEventListener('click', function () {
     logoDataUrl = null;
-    logoOverlay.style.display = 'none';
+    logoMount.style.display = 'none';
     logoOverlay.src = '';
     logoUpload.value = '';
     logoFileName.style.display = 'none';
+    productPos = { x: 0, y: 0 };
+    productRot = 0;
+    applyProductTransform();
+    applyPositionPreset('center');
+    positionBtns.forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-position') === 'center'); });
+    if (currentProduct.hasBack) setSide('front');
   });
 
   /* ---------- Render final composite onto an offscreen canvas ---------- */
-  function renderComposite(targetWidth, targetHeight, callback) {
+  function svgToDataUri(svgEl) {
+    var clone = svgEl.cloneNode(true);
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    var xml = new XMLSerializer().serializeToString(clone);
+    var b64 = btoa(unescape(encodeURIComponent(xml)));
+    return 'data:image/svg+xml;base64,' + b64;
+  }
+
+  function renderCompositeVector(targetWidth, targetHeight, callback, onError) {
+    try {
+      var tempCanvas = document.createElement('canvas');
+      tempCanvas.width = targetWidth; tempCanvas.height = targetHeight;
+      var ctx = tempCanvas.getContext('2d');
+
+      // Backdrop, matching the on-screen studio background.
+      var bg = ctx.createLinearGradient(0, 0, 0, targetHeight);
+      bg.addColorStop(0, '#ffffff');
+      bg.addColorStop(1, '#efece2');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+      var canvasRect = studioCanvas.getBoundingClientRect();
+      var scaleX = targetWidth / canvasRect.width;
+      var scaleY = targetHeight / canvasRect.height;
+
+      var mountRect = productMount.getBoundingClientRect();
+      var centerX = ((mountRect.left + mountRect.right) / 2 - canvasRect.left) * scaleX;
+      var centerY = ((mountRect.top + mountRect.bottom) / 2 - canvasRect.top) * scaleY;
+      var pw = PRODUCT_BOX * scaleX, ph = PRODUCT_BOX * scaleY;
+
+      var productImg = new Image();
+      productImg.onload = function () {
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(productRot * Math.PI / 180);
+        ctx.drawImage(productImg, -pw / 2, -ph / 2, pw, ph);
+        ctx.restore();
+
+        if (!logoDataUrl) { callback(tempCanvas); return; }
+
+        var logoRect = logoMount.getBoundingClientRect();
+        var lCenterX = ((logoRect.left + logoRect.right) / 2 - canvasRect.left) * scaleX;
+        var lCenterY = ((logoRect.top + logoRect.bottom) / 2 - canvasRect.top) * scaleY;
+        var lw = logoSize * scaleX, lh = logoSize * scaleY;
+
+        var logoImg = new Image();
+        logoImg.onload = function () {
+          ctx.save();
+          ctx.translate(lCenterX, lCenterY);
+          ctx.rotate(productRot * Math.PI / 180);
+          ctx.drawImage(logoImg, -lw / 2, -lh / 2, lw, lh);
+          ctx.restore();
+          callback(tempCanvas);
+        };
+        logoImg.onerror = function () { onError(new Error('logo load failed')); };
+        logoImg.src = logoDataUrl;
+      };
+      productImg.onerror = function () { onError(new Error('product art render failed')); };
+      productImg.src = svgToDataUri(productSvg);
+    } catch (err) {
+      onError(err);
+    }
+  }
+
+  function renderCompositeCustomPhoto(targetWidth, targetHeight, callback, onError) {
     var tempCanvas = document.createElement('canvas');
-    tempCanvas.width = targetWidth;
-    tempCanvas.height = targetHeight;
+    tempCanvas.width = targetWidth; tempCanvas.height = targetHeight;
     var ctx = tempCanvas.getContext('2d');
 
     var base = new Image();
     base.crossOrigin = 'anonymous';
     base.onload = function () {
-      ctx.drawImage(base, 0, 0, targetWidth, targetHeight);
+      try {
+        ctx.drawImage(base, 0, 0, targetWidth, targetHeight);
+        ctx.save();
+        ctx.globalCompositeOperation = 'multiply';
+        if (typeof currentColor === 'object' && currentColor.mode === 'gradient') {
+          var grad;
+          if (currentColor.direction === 'radial') {
+            grad = ctx.createRadialGradient(targetWidth * 0.42, targetHeight * 0.32, 10, targetWidth * 0.5, targetHeight * 0.5, targetWidth * 0.75);
+          } else if (currentColor.direction === 'vertical') {
+            grad = ctx.createLinearGradient(0, 0, 0, targetHeight);
+          } else if (currentColor.direction === 'horizontal') {
+            grad = ctx.createLinearGradient(0, 0, targetWidth, 0);
+          } else {
+            grad = ctx.createLinearGradient(0, 0, targetWidth, targetHeight);
+          }
+          grad.addColorStop(0, currentColor.from);
+          grad.addColorStop(1, currentColor.to);
+          ctx.fillStyle = grad;
+        } else {
+          ctx.fillStyle = currentColor;
+        }
+        ctx.fillRect(0, 0, targetWidth, targetHeight);
+        ctx.restore();
+      } catch (err) {
+        onError(err);
+        return;
+      }
 
-      if (!logoDataUrl) { callback(tempCanvas); return; }
+      if (!logoDataUrl) { finish(); return; }
 
       var canvasRect = studioCanvas.getBoundingClientRect();
-      var overlayRect = logoOverlay.getBoundingClientRect();
+      var logoRect = logoMount.getBoundingClientRect();
       var scaleX = targetWidth / canvasRect.width;
       var scaleY = targetHeight / canvasRect.height;
 
       var logo = new Image();
       logo.onload = function () {
-        var w = overlayRect.width * scaleX;
-        var h = overlayRect.height * scaleY;
-        var x = (overlayRect.left - canvasRect.left) * scaleX;
-        var y = (overlayRect.top - canvasRect.top) * scaleY;
+        var w = logoRect.width * scaleX, h = logoRect.height * scaleY;
+        var x = (logoRect.left - canvasRect.left) * scaleX;
+        var y = (logoRect.top - canvasRect.top) * scaleY;
+        ctx.save();
+        ctx.globalCompositeOperation = 'multiply';
         ctx.drawImage(logo, x, y, w, h);
-        callback(tempCanvas);
+        ctx.restore();
+        finish();
       };
       logo.src = logoDataUrl;
+
+      function finish() {
+        try { callback(tempCanvas); } catch (err) { onError(err); }
+      }
     };
+    base.onerror = function () { onError(new Error('image load failed')); };
     base.src = mockupImage.src;
   }
 
@@ -808,12 +726,24 @@
       alert('Upload your logo first, then download your mockup.');
       return;
     }
-    renderComposite(1000, 1250, function (canvas) {
+    var onErr = function () {
+      alert("This mockup's source doesn't allow a browser download — please take a screenshot instead, or send us the design directly using the form below.");
+    };
+    var onDone = function (canvas) {
+      var dataUrl;
+      try {
+        dataUrl = canvas.toDataURL('image/png');
+      } catch (err) { onErr(); return; }
       var link = document.createElement('a');
       link.download = currentProduct.name.toLowerCase().replace(/\s+/g, '-') + '-mockup.png';
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
-    });
+    };
+    if (isCustomMockup) {
+      renderCompositeCustomPhoto(1000, 1250, onDone, onErr);
+    } else {
+      renderCompositeVector(1000, 1000, onDone, onErr);
+    }
   });
 
   /* ---------- Enquiry form ---------- */
@@ -830,6 +760,10 @@
   });
 
   /* ---------- Init ---------- */
-  mockupImage.src = svgToDataUrl(currentProduct.id, currentColor);
+  applyProductTransform();
+  renderProductArt();
+  updateSideToggleAvailability();
+  refreshMockupColor();
   applySize(sizeRange.value);
+  applyPositionPreset('center');
 })();

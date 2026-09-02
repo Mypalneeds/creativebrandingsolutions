@@ -8,6 +8,9 @@
 <link rel="icon" href="assets/images/favicon-32.png" sizes="32x32" type="image/png" />
 <link rel="icon" href="assets/images/favicon.png" type="image/png" />
 <link rel="apple-touch-icon" href="assets/images/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css" />
 <link rel="canonical" href="https://creativebrandingsolutions.ng/services.html" />
@@ -141,7 +144,23 @@
     </a>
     <div class="navlinks">
       <a href="index.html">Home</a>
-      <a href="services.html" class="active">Services</a>
+      <div class="nav-item has-mega">
+      <a href="services.html" class="nav-mega-trigger active">Services</a>
+      <button class="nav-mega-toggle" type="button" aria-label="Toggle services menu" aria-expanded="false"><i class="fa-solid fa-chevron-down"></i></button>
+      <div class="nav-mega">
+        <div class="nav-mega-panel">
+        <div class="nav-mega-grid">
+          <a href="services.html#print" class="nav-mega-item"><i class="fa-solid fa-file-lines"></i><span>Commercial &amp; Marketing Print</span></a>
+          <a href="services.html#packaging" class="nav-mega-item"><i class="fa-solid fa-box"></i><span>Packaging &amp; Labels</span></a>
+          <a href="services.html#outdoor" class="nav-mega-item"><i class="fa-solid fa-signs-post"></i><span>Outdoor Advertising</span></a>
+          <a href="services.html#vehicle" class="nav-mega-item"><i class="fa-solid fa-truck"></i><span>Vehicle &amp; Environmental</span></a>
+          <a href="services.html#gifts" class="nav-mega-item"><i class="fa-solid fa-gift"></i><span>Gifts &amp; Promotional</span></a>
+          <a href="services.html#office" class="nav-mega-item"><i class="fa-solid fa-building"></i><span>Office &amp; Workspace</span></a>
+        </div>
+        <a href="services.html" class="nav-mega-viewall">View All Six Capabilities <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
       <a href="portfolio.html">Portfolio</a>
       <a href="mockup-studio.html">Mockup Studio</a>
       <a href="blog.html">Blog</a>
@@ -326,7 +345,7 @@
 <section class="bg-teal-solid" style="position:relative;">
   <div class="wave-divider wave-top">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,30 C200,70 400,70 600,50 C800,30 1000,60 1200,40 L1200,70 L0,70 Z" fill="var(--teal)"></path>
+      <path d="M0,6 L1200,70 L0,70 Z" fill="var(--teal)"></path>
     </svg>
   </div>
   <div class="container">
@@ -355,7 +374,7 @@
   </div>
   <div class="wave-divider wave-bottom">
     <svg viewBox="0 0 1200 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,70 C200,10 400,10 600,40 C800,70 1000,20 1200,10 L1200,70 L0,70 Z" fill="var(--teal)"></path>
+      <path d="M0,70 L1200,6 L1200,70 Z" fill="var(--teal)"></path>
     </svg>
   </div>
 </section>

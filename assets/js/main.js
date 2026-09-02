@@ -53,6 +53,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // ---------------------------------------------------------------------
+  // Services nav mega-menu — click/tap toggle (in addition to the CSS
+  // :hover reveal) so it works on touch devices and gives keyboard/tap
+  // users an explicit, reliable way to open it that doesn't depend on
+  // the mouse staying over a gap between the trigger and the panel.
+  // ---------------------------------------------------------------------
+  var megaItem = document.querySelector('.nav-item.has-mega');
+  var megaToggleBtn = megaItem ? megaItem.querySelector('.nav-mega-toggle') : null;
+  if (megaItem && megaToggleBtn) {
+    function closeMega() {
+      megaItem.classList.remove('is-open');
+      megaToggleBtn.setAttribute('aria-expanded', 'false');
+    }
+    function openMega() {
+      megaItem.classList.add('is-open');
+      megaToggleBtn.setAttribute('aria-expanded', 'true');
+    }
+    megaToggleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (megaItem.classList.contains('is-open')) closeMega(); else openMega();
+    });
+    document.addEventListener('click', function (e) {
+      if (megaItem.classList.contains('is-open') && !megaItem.contains(e.target)) closeMega();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMega();
+    });
+    // A link inside the panel was reached (tap or keyboard) — let it
+    // navigate normally, no extra handling needed; just reset state so
+    // a later back-navigation doesn't land with the panel stuck open.
+    megaItem.querySelectorAll('.nav-mega a').forEach(function (a) {
+      a.addEventListener('click', closeMega);
+    });
+  }
+
   // Hero slider
   var slider = document.querySelector('#heroSlider');
   if (slider) {

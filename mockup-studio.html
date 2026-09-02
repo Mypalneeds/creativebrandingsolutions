@@ -8,6 +8,9 @@
 <link rel="icon" href="assets/images/favicon-32.png" sizes="32x32" type="image/png" />
 <link rel="icon" href="assets/images/favicon.png" type="image/png" />
 <link rel="apple-touch-icon" href="assets/images/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css" />
 <link rel="canonical" href="https://creativebrandingsolutions.ng/mockup-studio.html" />
@@ -120,7 +123,23 @@
     </a>
     <div class="navlinks">
       <a href="index.html">Home</a>
-      <a href="services.html">Services</a>
+      <div class="nav-item has-mega">
+      <a href="services.html" class="nav-mega-trigger">Services</a>
+      <button class="nav-mega-toggle" type="button" aria-label="Toggle services menu" aria-expanded="false"><i class="fa-solid fa-chevron-down"></i></button>
+      <div class="nav-mega">
+        <div class="nav-mega-panel">
+        <div class="nav-mega-grid">
+          <a href="services.html#print" class="nav-mega-item"><i class="fa-solid fa-file-lines"></i><span>Commercial &amp; Marketing Print</span></a>
+          <a href="services.html#packaging" class="nav-mega-item"><i class="fa-solid fa-box"></i><span>Packaging &amp; Labels</span></a>
+          <a href="services.html#outdoor" class="nav-mega-item"><i class="fa-solid fa-signs-post"></i><span>Outdoor Advertising</span></a>
+          <a href="services.html#vehicle" class="nav-mega-item"><i class="fa-solid fa-truck"></i><span>Vehicle &amp; Environmental</span></a>
+          <a href="services.html#gifts" class="nav-mega-item"><i class="fa-solid fa-gift"></i><span>Gifts &amp; Promotional</span></a>
+          <a href="services.html#office" class="nav-mega-item"><i class="fa-solid fa-building"></i><span>Office &amp; Workspace</span></a>
+        </div>
+        <a href="services.html" class="nav-mega-viewall">View All Six Capabilities <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
       <a href="portfolio.html">Portfolio</a>
       <a href="mockup-studio.html" class="active">Mockup Studio</a>
       <a href="blog.html">Blog</a>
@@ -190,13 +209,41 @@
 
       <!-- CANVAS PREVIEW -->
       <div class="studio-canvas-wrap">
-        <div class="studio-product-name" id="studioProductName">T-Shirt</div>
-        <p class="studio-hint">Drag your logo to reposition it on the product.</p>
+        <div class="studio-canvas-head">
+          <div>
+            <div class="studio-product-name" id="studioProductName">T-Shirt</div>
+            <p class="studio-hint" id="studioHint">Drag the product to move it, use the handle to rotate, and drag your logo to reposition it.</p>
+          </div>
+          <button type="button" class="side-toggle" id="sideToggleBtn" aria-label="Flip to back view">
+            <i class="fa-solid fa-arrows-rotate"></i> <span id="sideToggleLabel">View Back</span>
+          </button>
+        </div>
 
         <div class="studio-canvas" id="studioCanvas">
-          <img class="mockup-base" id="mockupImage" alt="Product mockup preview" />
-          <img class="logo-overlay" id="logoOverlay" alt="Your logo" />
+          <div class="canvas-backdrop"></div>
+
+          <!-- Vector product mount: draggable (move) + rotatable, front/back swappable -->
+          <div class="product-mount" id="productMount">
+            <svg id="productSvg" class="product-svg" viewBox="0 0 300 300" aria-hidden="true">
+              <defs></defs>
+              <g id="productArt"></g>
+            </svg>
+            <div class="logo-mount" id="logoMount" style="display:none;">
+              <img class="logo-img" id="logoOverlay" alt="Your logo" draggable="false" />
+            </div>
+            <button type="button" class="rotate-handle" id="rotateHandle" aria-label="Drag to rotate product" title="Drag to rotate">
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+
+          <!-- Legacy full-frame mount, shown only for an uploaded custom photo -->
+          <div class="custom-photo-mount" id="customPhotoMount" style="display:none;">
+            <img class="mockup-base" id="mockupImage" alt="Your uploaded mockup photo" />
+            <div class="mockup-recolor" id="mockupRecolor"></div>
+            <div class="mockup-vignette"></div>
+          </div>
         </div>
+        <p class="studio-credit" id="studioCredit">Vector product — recolour, drag, rotate and flip freely.</p>
 
         <div class="position-btns">
           <button type="button" data-position="left-chest">Left</button>
@@ -205,7 +252,7 @@
         </div>
 
         <div class="studio-actions">
-          <button type="button" class="btn btn-outline btn-sm" id="resetLogoBtn">Reset Logo</button>
+          <button type="button" class="btn btn-outline btn-sm" id="resetLogoBtn">Reset Mockup</button>
           <button type="button" class="btn btn-primary btn-sm" id="downloadBtn">Download PNG <i class="fa-solid fa-download"></i></button>
         </div>
       </div>
