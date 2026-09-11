@@ -677,13 +677,13 @@ body.nav-open{ overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 148px;
-  height: 76px;
+  width: 176px;
+  height: 92px;
   flex-shrink: 0;
   background: var(--white);
   border: none;
   border-radius: var(--radius);
-  padding: 14px 18px;
+  padding: 16px 22px;
   opacity: 1;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
@@ -714,11 +714,10 @@ section{ padding: 100px 0; }
   gap: 30px;
 }
 .why-card{
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 36px 30px;
-  border-top: 4px solid var(--flame);
+  background: transparent;
+  border: none;
+  border-top: 3px solid var(--flame);
+  padding: 26px 4px 0;
   position: relative;
 }
 .why-card:nth-child(2){ border-top-color: var(--teal); }
@@ -758,9 +757,10 @@ section{ padding: 100px 0; }
   flex-direction: column;
   height: 100%;
   background: var(--white);
-  border: 1px solid var(--line);
+  border: none;
   overflow: hidden;
   border-top: 4px solid var(--flame);
+  box-shadow: 0 1px 0 rgba(0,26,48,0.06);
   transition: box-shadow .25s var(--ease), transform .25s var(--ease);
 }
 .svc-card:nth-child(2){ border-top-color: var(--amber); }
