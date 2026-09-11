@@ -388,22 +388,22 @@
     </div>
     <div class="process-grid">
       <div class="process-step solid-card">
-        <div class="process-num">01</div>
+        <div class="process-icon"><i class="fa-solid fa-comments"></i><span class="process-num">01</span></div>
         <h3>Consult</h3>
         <p>Tell us about your brand, budget and timeline. We recommend the right mix of print and promotional branding.</p>
       </div>
       <div class="process-step solid-card">
-        <div class="process-num">02</div>
+        <div class="process-icon"><i class="fa-solid fa-pen-ruler"></i><span class="process-num">02</span></div>
         <h3>Design</h3>
         <p>Our creative team develops concepts and mockups for your approval, with revisions until it's exactly right.</p>
       </div>
       <div class="process-step solid-card">
-        <div class="process-num">03</div>
+        <div class="process-icon"><i class="fa-solid fa-industry"></i><span class="process-num">03</span></div>
         <h3>Produce</h3>
         <p>We print, fabricate or manufacture using quality materials and equipment, with checks at every stage.</p>
       </div>
       <div class="process-step solid-card">
-        <div class="process-num">04</div>
+        <div class="process-icon"><i class="fa-solid fa-truck-fast"></i><span class="process-num">04</span></div>
         <h3>Deliver</h3>
         <p>Nationwide delivery and professional installation, so your branding is ready exactly where and when you need it.</p>
       </div>
@@ -425,10 +425,10 @@
         <h2 style="font-size:32px;margin-bottom:6px;color:var(--white);">An Executive Tier For Enterprise Accounts</h2>
         <p style="color:rgba(255,255,255,0.82);">Banks, oil &amp; gas majors and professional-services firms don't buy the way an SME does. We run those accounts on a distinct track — dedicated lead, faster SLA, bespoke materials.</p>
         <ul class="tier-list" style="border-color:rgba(255,255,255,0.2);">
-          <li style="color:rgba(255,255,255,0.9);border-bottom-color:rgba(255,255,255,0.18);"><i class="fa-solid fa-user-tie" style="color:var(--amber);"></i> A dedicated account lead, not a rotating sales contact</li>
-          <li style="color:rgba(255,255,255,0.9);border-bottom-color:rgba(255,255,255,0.18);"><i class="fa-solid fa-bolt" style="color:var(--amber);"></i> Priority turnaround SLAs for time-sensitive rollouts</li>
-          <li style="color:rgba(255,255,255,0.9);border-bottom-color:rgba(255,255,255,0.18);"><i class="fa-solid fa-swatchbook" style="color:var(--amber);"></i> Bespoke materials and finishes reserved for premium briefs</li>
-          <li style="color:rgba(255,255,255,0.9);"><i class="fa-solid fa-file-contract" style="color:var(--amber);"></i> Procurement-ready documentation — compliance, capacity and case data on request</li>
+          <li style="color:rgba(255,255,255,0.9);border-bottom-color:rgba(255,255,255,0.18);"><i class="fa-solid fa-user-tie"></i> A dedicated account lead, not a rotating sales contact</li>
+          <li style="color:rgba(255,255,255,0.9);border-bottom-color:rgba(255,255,255,0.18);"><i class="fa-solid fa-bolt"></i> Priority turnaround SLAs for time-sensitive rollouts</li>
+          <li style="color:rgba(255,255,255,0.9);border-bottom-color:rgba(255,255,255,0.18);"><i class="fa-solid fa-swatchbook"></i> Bespoke materials and finishes reserved for premium briefs</li>
+          <li style="color:rgba(255,255,255,0.9);"><i class="fa-solid fa-file-contract"></i> Procurement-ready documentation — compliance, capacity and case data on request</li>
         </ul>
       </div>
       <div class="tier-card solid-card" style="background:var(--white);color:var(--ink);">
@@ -460,43 +460,47 @@
       <h2>Seen All Over Lagos — And Beyond</h2>
       <p>A look at branding we've designed, printed and installed for clients across retail, FMCG and corporate sectors.</p>
     </div>
-    <div class="gallery">
-      <figure>
-        <img src="assets/images/keke-napep-wrap.webp" alt="Branded tricycle (keke) wrap" />
-        <figcaption>Keke Napep Fleet Wrap</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/expo-booth.webp" alt="Branded exhibition booth" />
-        <figcaption>Lagos Branding Expo Booth</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/feather-flags-street.webp" alt="Branded roadside pole banner" />
-        <figcaption>Roadside Pole Banner Campaign</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/retail-shelf-display.webp" alt="Retail shelf display branding" />
-        <figcaption>In-Store Shelf Display</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/pop-up-tent-branded.webp" alt="Branded pop-up canopy tent" />
-        <figcaption>Street Activation Gazebo</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/car-wrap-sedan.webp" alt="Branded delivery van wrap" />
-        <figcaption>Fleet Van Wrap</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/golf-umbrella-branded.webp" alt="Branded golf umbrella for corporate events" />
-        <figcaption>Corporate Event Umbrellas</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/truck-wrap-chi.webp" alt="Branded truck fleet wrap" />
-        <figcaption>Truck Fleet Wrap</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/images/street-cart-display.webp" alt="Branded street vendor cart" />
-        <figcaption>Street Vendor Cart Branding</figcaption>
-      </figure>
+    <div class="gallery-carousel">
+      <button class="carousel-arrow carousel-arrow-prev" type="button" aria-label="Scroll gallery left" data-carousel-prev="lagosGalleryTrack"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="gallery-track" id="lagosGalleryTrack">
+        <figure>
+          <img src="assets/images/keke-napep-wrap.webp" alt="Branded tricycle (keke) wrap" />
+          <figcaption>Keke Napep Fleet Wrap</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/expo-booth.webp" alt="Branded exhibition booth" />
+          <figcaption>Lagos Branding Expo Booth</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/feather-flags-street.webp" alt="Branded roadside pole banner" />
+          <figcaption>Roadside Pole Banner Campaign</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/retail-shelf-display.webp" alt="Retail shelf display branding" />
+          <figcaption>In-Store Shelf Display</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/pop-up-tent-branded.webp" alt="Branded pop-up canopy tent" />
+          <figcaption>Street Activation Gazebo</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/car-wrap-sedan.webp" alt="Branded delivery van wrap" />
+          <figcaption>Fleet Van Wrap</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/golf-umbrella-branded.webp" alt="Branded golf umbrella for corporate events" />
+          <figcaption>Corporate Event Umbrellas</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/truck-wrap-chi.webp" alt="Branded truck fleet wrap" />
+          <figcaption>Truck Fleet Wrap</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/images/street-cart-display.webp" alt="Branded street vendor cart" />
+          <figcaption>Street Vendor Cart Branding</figcaption>
+        </figure>
+      </div>
+      <button class="carousel-arrow carousel-arrow-next" type="button" aria-label="Scroll gallery right" data-carousel-next="lagosGalleryTrack"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
     <div class="section-cta" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
       <a href="portfolio.html#case-studies" class="btn btn-primary">Read Case Studies <i class="fa-solid fa-arrow-right"></i></a>

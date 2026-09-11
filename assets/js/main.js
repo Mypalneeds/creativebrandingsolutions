@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
     revealEls.forEach(function (el, i) {
       el.classList.add('reveal-init');
       // Small stagger for siblings sitting in the same grid/row.
-      var delay = (i % 4) * 90;
+      var delay = (i % 4) * 45;
       el.style.transitionDelay = delay + 'ms';
     });
 
@@ -232,10 +232,13 @@ document.addEventListener('DOMContentLoaded', function () {
             el.style.transitionDelay = '';
           };
           el.addEventListener('transitionend', cleanup, { once: true });
-          setTimeout(cleanup, 1400); // fallback in case transitionend never fires
+          setTimeout(cleanup, 700); // fallback in case transitionend never fires
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      // Trigger as soon as an element is any amount visible, well before
+      // the user actually scrolls to read it, so the fade is always
+      // finished (not caught mid-transition) by the time it's in view.
+    }, { threshold: 0.01, rootMargin: '0px 0px 120px 0px' });
 
     revealEls.forEach(function (el) { revealObserver.observe(el); });
   }
@@ -385,5 +388,34 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   }
+
+  // Horizontal gallery carousel (home "Seen All Over Lagos" strip) — arrow
+  // buttons scroll the track by roughly one card width; native touch/trackpad
+  // scrolling still works directly on the track, this just adds the click
+  // affordance. Buttons disable themselves at either end of the track.
+  document.querySelectorAll('[data-carousel-prev], [data-carousel-next]').forEach(function (btn) {
+    var targetId = btn.getAttribute('data-carousel-prev') || btn.getAttribute('data-carousel-next');
+    var track = document.getElementById(targetId);
+    if (!track) return;
+    var dir = btn.hasAttribute('data-carousel-prev') ? -1 : 1;
+    btn.addEventListener('click', function () {
+      var card = track.querySelector('figure');
+      var step = card ? card.getBoundingClientRect().width + 20 : track.clientWidth * 0.8;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    });
+  });
+  document.querySelectorAll('.gallery-track').forEach(function (track) {
+    var prevBtn = document.querySelector('[data-carousel-prev="' + track.id + '"]');
+    var nextBtn = document.querySelector('[data-carousel-next="' + track.id + '"]');
+    if (!prevBtn && !nextBtn) return;
+    var updateArrows = function () {
+      var max = track.scrollWidth - track.clientWidth - 8;
+      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 8;
+      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
+    };
+    track.addEventListener('scroll', updateArrows);
+    window.addEventListener('resize', updateArrows);
+    updateArrows();
+  });
 
 });
